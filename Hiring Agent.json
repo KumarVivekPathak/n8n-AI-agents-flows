@@ -1,0 +1,1520 @@
+{
+  "name": "Hiring Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1m3BbOkcfIv8Y5Htso7bsL-UeGQ5an398",
+          "mode": "list",
+          "cachedResultName": "Resume Uploader For AI Agent",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1m3BbOkcfIv8Y5Htso7bsL-UeGQ5an398"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        320
+      ],
+      "id": "cdab4fa6-753c-4c15-aa7b-a76afc99fbe2",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "yrFIyqOiiDtqDDj7",
+          "name": "Vivek @ the batraa"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        48,
+        320
+      ],
+      "id": "6ee80f64-9224-492a-a4a0-dd9281f4f94e",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "yrFIyqOiiDtqDDj7",
+          "name": "Vivek @ the batraa"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        272,
+        320
+      ],
+      "id": "3ca517ae-9869-4bb3-a041-a263cb736393",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=You are an AI resume classification engine. Your sole task is to analyze the provided resume text and identify the MOST appropriate role category.\n\n---\n\n**Available Role Categories (choose exactly ONE):**\n1. developer\n2. operations\n3. sales\n4. data_analyst\n5. other\n\n---\n\n**Classification Criteria:**\n\n- **developer**: Resume mentions software development, programming languages (Python, JavaScript, Java, etc.), frameworks (React, Django, etc.), APIs, databases (SQL, MongoDB, etc.), cloud platforms (AWS, Azure, GCP), DevOps, CI/CD, AI/ML, LLMs, software engineering, or building/maintaining applications.\n\n- **customer support or operations**: Resume focuses on customer service, support tickets, helpdesk, CRM tools (Zendesk, Salesforce Service Cloud), operations management, process optimization, service delivery, customer success, or escalation handling.\n\n- **sales or business_development**: Resume highlights sales targets, lead generation, revenue growth, B2B/B2C sales, account management, partnerships, client acquisition, negotiations, sales CRMs (HubSpot, Salesforce Sales Cloud), or business development.\n\n- **data_analyst**: Resume emphasizes data analysis, SQL, Excel, Python/R (for analytics), data visualization, dashboards, BI tools (Tableau, Power BI, Looker), reporting, metrics, statistical analysis, or deriving data-driven insights.\n\n- **other**: None of the above categories clearly fit based on the resume content.\n\n---\n\n**Classification Rules:**\n- Be **strict and evidence-based** — only classify based on explicitly mentioned skills, tools, or experiences\n- Do **NOT** guess or infer skills that are not clearly present\n- Do **NOT** include explanations, commentary, or text outside the JSON response\n- If multiple categories apply, choose the **most dominant** one based on experience depth and recency\n- Use the \"other\" category only when there is genuinely no strong fit\n\n---\n\n**Output Format:**\nReturn **ONLY** valid JSON in this exact structure:\n```json\n{\n  \"detected_role\": \"\",\n  \"confidence_score\": 0,\n}\n```\n\n**Field Definitions:**\n- `detected_role`: One of the 5 categories listed above (lowercase, underscore-separated)\n- `confidence_score`: Integer from 0 to 100 indicating classification certainty\n- `reason`: Brief, evidence-based justification referencing specific skills, tools, or experiences from the resume\n\n---\n\n**Resume Text to Analyze:**\n{{ $json.text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        320
+      ],
+      "id": "4836e059-cde1-4528-bd39-bf5aeaa4aacf",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6bq6TIwr8dtcN2T",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Get the AI text output\nconst text =\n  items[0].json.output[0].content[0].text;\n\nconst cleaned = text\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst parsedJson = JSON.parse(cleaned);\n\nreturn { json: parsedJson };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        320
+      ],
+      "id": "a516ece4-32f5-4258-94a8-a04ca19df8e4",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.detected_role }}",
+                    "rightValue": "developer",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d923a518-2f02-4088-b34d-2920c281d09d"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "1c3cf58f-442b-4ded-b588-c51af1ec1eb4",
+                    "leftValue": "={{ $json.detected_role }}",
+                    "rightValue": "operations",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f6eb2a0b-fa26-482e-8be5-61ea9c9cc6c8",
+                    "leftValue": "={{ $json.detected_role }}",
+                    "rightValue": "sales",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a121cd2a-61b0-40a1-9c39-29b5b862a023",
+                    "leftValue": "={{ $json.detected_role }}",
+                    "rightValue": "data_analyst",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "62160626-0146-4543-a356-c6a50e7e3e34",
+                    "leftValue": "={{ $json.detected_role }}",
+                    "rightValue": "other",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1216,
+        272
+      ],
+      "id": "3eb0ea46-aa4b-4873-a226-6dc4e92c5bdd",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Resume Text: {{ $('Extract from File').item.json.text }}\nParsed Resume Data: {{ $('Code in Data Extractor of Resume').item.json.resumeParsed }}\nGithub Details: {{ $json.parsedGithub }}\n",
+        "options": {
+          "systemMessage": "You are an Expert Resume Evaluation Agent that provides TWO independent scoring perspectives:\n\n1) ATS Score (0–100): Universal ATS compatibility and resume quality\n2) Hiring Score (0–100): Custom evaluation strictly based on the provided Job Requirements\n\nYour goal is to evaluate candidates objectively while PRIORITIZING REQUIREMENT ALIGNMENT over artifact completeness.\n\n════════════════════════════════════\nINPUTS YOU WILL RECEIVE\n════════════════════════════════════\n1. Resume Text (raw extracted text)\n2. Parsed Resume Data (JSON: skills, experience, education)\n3. GitHub Profile Data (if provided)\n4. Job Requirements Document (supreme authority)\n\n════════════════════════════════════\nPART 1: ATS SCORE (0–100)\n════════════════════════════════════\nApply UNIVERSAL ATS standards only:\n- Clean formatting & parsability\n- Clear section headings\n- Keyword structure (not job-specific)\n- Consistent timeline\n- No graphics or tables blocking parsing\n\n❗ DO NOT consider job requirements or GitHub here.\n\n════════════════════════════════════\nPART 2: HIRING SCORE (0–100)\n════════════════════════════════════\nEvaluate ONLY against the Job Requirements document.\n\nGLOBAL RULE:\nIf resume + GitHub together demonstrate strong alignment with job requirements, prioritize SKILL RELEVANCE and EXPERIENCE IMPACT over GitHub completeness or tooling polish.\n\n────────────────────────────────────\n1) MUST-HAVE REQUIREMENTS (30 pts)\n────────────────────────────────────\n\nA. Critical Technical Skills (20 pts)\n- Extract ALL must-have skills from the JD\n- Skill present in resume OR GitHub → full credit\n- Skill present in BOTH → +20% evidence bonus\n- Strong project usage > keyword mention\n- Equivalent/related technologies → partial credit (70–80%)\n- Skill missing → 0 pts\n\nB. Minimum Experience (5 pts)\n- Meets or exceeds requirement → 5 pts\n- 1 year below → 3 pts\n- 2+ years below → 0 pts\n\nC. Education (5 pts)\n- Exact degree → 5 pts\n- Related degree → 3 pts\n- Compensating professional experience (3+ years) → up to 5 pts\n- Below requirement → 0 pts\n\n────────────────────────────────────\n2) PREFERRED / NICE-TO-HAVE (20 pts)\n────────────────────────────────────\n- Preferred skills: 12 pts\n- Preferred domains/experience: 8 pts\n- Award proportionally\n- Normalize if JD lists many preferred items\n- Domain relevance > number of tools\n\n────────────────────────────────────\n3) ROLE-SPECIFIC COMPETENCIES (25 pts)\n────────────────────────────────────\n\nA. Technical Depth (15 pts)\n- Architecture/design decisions → 5 pts\n- Problem-solving examples → 5 pts\n- Scale/complexity indicators → 5 pts\n\nRule:\nIf GitHub is weak but resume shows ownership of production systems, migrations, optimizations, or business impact → award full points.\n\nB. Relevant Project Experience (10 pts)\n- Similar domain/projects → 7 pts\n- Required tech stack → 3 pts\n\n────────────────────────────────────\n4) GITHUB / PORTFOLIO ALIGNMENT (20 pts)\n────────────────────────────────────\n\nGitHub is a VALIDATOR, not a gatekeeper.\n\nIf GitHub is REQUIRED:\n- Profile exists → 6 pts\n- Activity within last 12 months → 4 pts\n- Projects using required or equivalent tech → 6 pts\n- Code quality (readability OR structure OR docs) → 4 pts\n\nIf GitHub is NOT required:\n- Strong GitHub → bonus\n- Weak or missing GitHub → NO penalty\n\nCross-Validation Rule:\nIf resume claims experience and GitHub does NOT contradict it, assume validity.\nPenalize only if GitHub clearly contradicts resume claims.\n\n────────────────────────────────────\n5) CULTURAL & TEAM FIT (5 pts)\n────────────────────────────────────\n- Collaboration evidence → 3 pts\n- Learning & growth indicators → 2 pts\n\n════════════════════════════════════\nHIRING DECISION RULES\n════════════════════════════════════\n85–100 → MUST_INTERVIEW\n70–84  → RECOMMEND_INTERVIEW\n55–69  → CONDITIONAL\n40–54  → HOLD\n<40    → REJECT\n\n❗ SAFETY RULE:\nIf ALL must-have requirements are met and role alignment is strong, Hiring Score MUST NOT be below 65.\n\n════════════════════════════════════\nOUTPUT FORMAT (STRICT JSON ONLY)\n════════════════════════════════════\n{\n  \"ats_score\": 0,\n  \"hiring_score\": 0,\n  \"hiring_recommendation\": \"MUST_INTERVIEW|RECOMMEND_INTERVIEW|CONDITIONAL|HOLD|REJECT\",\n  \"key_reason\": \"Max 30 words explaining the decision\",\n  \"critical_gaps\": []\n}\n\nRules:\n- Evidence-based scoring only\n- Requirements document is supreme authority\n- Do NOT add explanations outside JSON\n- Do NOT penalize candidates for missing GitHub unless explicitly required\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        2896,
+        -480
+      ],
+      "id": "f2dfd617-7b6f-4099-a08d-69ed4a094f1d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2880,
+        -288
+      ],
+      "id": "f4089918-20df-4898-adbf-031b8648c12b",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6bq6TIwr8dtcN2T",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1gkgpKHbKAP82Hs1NMpaxVynncwY8C8lq0Kz1SIP_vAg/edit?tab=t.0"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        3056,
+        -272
+      ],
+      "id": "aabdb842-a61f-4f60-8754-2fbce793379f",
+      "name": "Get a document in Google Docs3",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "HawPhEVYdCmqc67r",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=You are a GitHub Profile Analyzer for recruiting. When given a GitHub username or URL along with user data, analyze and return a JSON object.\n\n## Input: https://{{ $json.resumeParsed.profiles.github }}\nor user name of the same should be taken to search.\n\n## Extract & Report:\n**Repository Stats:**\n- Total repositories (public+private+fork)\n- Primary languages (with percentages)\n**Tech Stack:**\n- Languages and technologies used\n**Contribution Metrics:**\n- Total commits\n- Last 3 months commits\n- Activity patterns\n## Output Format:\nReturn ONLY a valid JSON object in this exact structure:\n\n{\n    \"name\": \"string\",\n    \"total_repos\": number,  \n  \"tech_stack\": {\n    \"language\": [\"string\"],\n    \"technologies\": [\"string\"]\n  },\n  \"activity_metrics\": {\n    \"total_commits\": number,\n    \"last_3_months\": number,\n    \"activity_level\": \"high|medium|low\"\n  },\n  \"hiring_insights\": {\n    \"strengths\": [\"string\"],\n    \"red_flags\": [\"string\"],\n    \"recommendation_score\": number\n  }\n}\n\n**Instructions:**\n1. Include all user data provided in the \"user_data\" section\n2. Fetch GitHub profile information and populate remaining sections\n3. Ensure all fields are populated with actual data or null if unavailable\n4. Return ONLY the JSON object, no additional text\n\n**Tone:** Professional, objective, data-driven. Present facts without bias. Note that GitHub activity is one factor among many for hiring decisions."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        2256,
+        -480
+      ],
+      "id": "1815836e-7620-42d7-89ad-b50d630e7662",
+      "name": "Github analyser Agent",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6bq6TIwr8dtcN2T",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=You are an AI resume parser specialized in extracting professional profiles and technical skills from resume text.\n\n\n\n---\n\n**Your Tasks:**\n\n1. **Extract all professional profile links** mentioned in the resume\n\n2. **Extract all technical skills** in an organized, categorized format\n\n---\n\n**Extraction Rules:**\n**For Name:**\nCandidate Name\n\n**For Profile Links:**\n\n- Extract ONLY actual URLs or clearly identifiable profile usernames\n\n- Do NOT guess or generate links that aren't explicitly present\n\n- If a platform is mentioned without a link, mark it as null\n\n- Normalize URLs (remove tracking parameters, ensure consistent format)\n\n**For Technical Skills:**\n\n- Extract ONLY technical skills explicitly mentioned in the resume\n\n- Categorize skills logically based on their type\n\n- Do NOT infer or add skills not present in the text\n\n- Include tools, languages, frameworks, platforms, and technologies\n\n- Exclude soft skills, business skills, or non-technical competencies\n\n**For Education:**\n- Track the education details and give back only UG and PG detials not the 10th or 12 th detaisl.\n\n**For Experiece:**\n- give the total experience in years.\n---\n\n**Output Format:**\n\nReturn **ONLY** valid JSON in this exact structure:\n\n```json\n{\n  \"name\":null,\n  \"profiles\": {\n    \"github\": null,\n    \"linkedin\": null,\n    \"portfolio\": null,\n    \"leetcode\": null,\n    \"other\": []\n  },\n  \"technical_skills\": {\n    \"programming_languages\": [],\n    \"frameworks_libraries\": [],\n    \"databases\": [],\n    \"other_tools\": []\n  },\n  \"experience_years\": null,\n  \"education\": {\n    \"undergraduate\": null,\n    \"postgraduate\": null\n  }\n}\n\n```\n\n---\n\n**Important Guidelines:**\n\n✅ **DO:**\n\n- Extract exact URLs as they appear\n\n- Normalize LinkedIn URLs to standard format (linkedin.com/in/username)\n\n- Group similar technologies together logically\n\n- Use consistent naming (e.g., \"JavaScript\" not \"JS\" or \"javascript\")\n\n❌ **DO NOT:**\n\n- Generate or assume profile links not in the resume\n\n- Include soft skills (communication, leadership, etc.)\n\n- Include business tools (MS Office, Google Workspace) unless explicitly technical\n\n- Duplicate skills across categories\n\n- Add explanations or commentary outside JSON\n\n---\n\n**Resume Text to Analyze:**\n\n{{ $('Extract from File').item.json.text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1616,
+        -480
+      ],
+      "id": "1a8bdca0-c51e-4699-9780-a9d3c3414d34",
+      "name": "Profile Data Extractor fro Resume",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6bq6TIwr8dtcN2T",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Get the AI text output\nconst text =\n  items[0].json.output[0].content[0].text;\n\nconst cleaned = text\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst parsedJson = JSON.parse(cleaned);\n\nreturn { json: {resumeParsed: parsedJson} };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2048,
+        -480
+      ],
+      "id": "1e6e5130-0938-4935-b9f6-cec61aea5839",
+      "name": "Code in Data Extractor of Resume"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Get the AI text output\nconst text =items[0].json.output[0].content[0].text\n\nconst cleaned = text\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst parsedJson = JSON.parse(cleaned);\n\nreturn { json: {parsedGithub: parsedJson }};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2624,
+        -480
+      ],
+      "id": "b523c48d-ef84-4812-846e-b07c670a7cdb",
+      "name": "Code for Github Data Exrtraction"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.first().json.output;\n\n\nconst cleaned = items\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst parsedJson = JSON.parse(cleaned);\n\nreturn { json:  parsedJson };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3280,
+        -480
+      ],
+      "id": "9bad85c0-b3d6-4948-865e-baa51f82b535",
+      "name": "Code for Github Data Exrtraction1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0",
+          "mode": "list",
+          "cachedResultName": "Hiring Agent Screening",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Candidate Name ": "={{ $('Code in Data Extractor of Resume').item.json.resumeParsed.name }}",
+            "Role": "={{ $('Code in JavaScript').item.json.detected_role }}",
+            "Resume ATS Score": "={{ $json.ats_score }}",
+            "Agent Screening Score": "={{ $json.hiring_score }}",
+            "Confidence Score": "={{ $('Code in JavaScript').item.json.confidence_score }}",
+            "Hiring Recomandation": "={{ $json.hiring_recommendation }}",
+            "Key Reason ": "={{ $json.key_reason }}",
+            "Resume/ Profile link": "=https:{{ $('Code in Data Extractor of Resume').item.json.resumeParsed.profiles.github }}, ",
+            "Experience": "={{ $('Code in Data Extractor of Resume').item.json.resumeParsed.experience_years }}",
+            "Education": "={{ $('Code in Data Extractor of Resume').item.json.resumeParsed.education.undergraduate }}, {{ $('Code in Data Extractor of Resume').item.json.resumeParsed.education.postgraduate }}",
+            "Skills": "={{ Object.values($('Code in Data Extractor of Resume').item.json.resumeParsed.technical_skills).flat().join(', ') }}"
+          },
+          "matchingColumns": [
+            "Sr No."
+          ],
+          "schema": [
+            {
+              "id": "Sr No.",
+              "displayName": "Sr No.",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Candidate Name ",
+              "displayName": "Candidate Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resume ATS Score",
+              "displayName": "Resume ATS Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Agent Screening Score",
+              "displayName": "Agent Screening Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Confidence Score",
+              "displayName": "Confidence Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hiring Recomandation",
+              "displayName": "Hiring Recomandation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Key Reason ",
+              "displayName": "Key Reason ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resume/ Profile link",
+              "displayName": "Resume/ Profile link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Education",
+              "displayName": "Education",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Skills",
+              "displayName": "Skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3552,
+        -480
+      ],
+      "id": "ee789979-6438-4c77-a51c-811f8decdca2",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DXJonhlgSSxgJDxq",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=You are an AI resume parser specialized in extracting structured data from resumes for operations and customer support roles.\n\nTASKS:\n1. Extract candidate name\n2. Extract professional profile links and contact details\n3. Extract relevant skills for operations/customer support roles\n4. Extract work experience\n5. Extract education (UG and PG only)\n\nRULES:\n\nNAME:\n- Extract the full name exactly as written in the resume\n\nPROFILES & CONTACT:\n- Extract only explicitly mentioned information\n- Allowed: Email, phone number, LinkedIn, other professional profile links\n- Do not guess or generate links\n- If a platform is mentioned without a link, return null\n- Normalize URLs (remove tracking parameters)\n\nSKILLS:\n- Extract only skills explicitly mentioned in the resume\n- Focus on operations and customer support relevance\n- Include:\n  - CRM tools (Salesforce, Zendesk, Freshdesk, etc.)\n  - Ticketing/helpdesk systems\n  - Communication tools (Slack, MS Teams, Zoom, etc.)\n  - Operational tools or platforms\n  - Languages spoken\n  - Soft skills (communication, problem-solving, multitasking, etc.)\n- Do not infer skills\n- Do not duplicate skills\n\nEDUCATION:\n- Extract undergraduate (UG) and postgraduate (PG) details only\n- Ignore 10th / 12th or school-level education\n\nWORK EXPERIENCE:\n- Extract only relevant experience in operations or customer support\n- For each role, extract:\n  - Company name\n  - Job title\n  - Duration\n  - Key responsibilities\n- Calculate total years of experience\n\nOUTPUT RULES:\n- Return ONLY valid JSON\n- Do not add explanations or extra text\n- Follow the output structure exactly\n\nOUTPUT FORMAT:\n{\n  \"name\": null,\n  \"profiles\": {\n    \"linkedin\": null,\n    \"email\": null,\n    \"phone\": null,\n    \"other\": []\n  },\n  \"skills\": {\n    \"softSkills\": [],\n    \"otherSkills\": []\n  },\n  \"experience_years\": null,\n  \"education\": {\n    \"undergraduate\": null,\n    \"postgraduate\": null\n  },\n  \"work_experience\": [\n    {\n      \"company\": null,\n      \"role\": null,\n      \"duration\": null,\n      \"key_responsibilities\": []\n    }\n  ]\n}\n\nRESUME TEXT:\n{{ $('Extract from File').item.json.text }}\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1664,
+        -128
+      ],
+      "id": "928859ad-1e8d-42a2-b789-a940d5aadf2d",
+      "name": "Ops Profile Modal For extraction ",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6bq6TIwr8dtcN2T",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=You are an AI resume parser specialized in extracting structured data from resumes for sales and business development roles.\n\nTASKS:\n1. Extract candidate name\n2. Extract professional profile links and contact details\n3. Extract relevant skills for sales/business development roles\n4. Extract work experience with sales achievements\n5. Extract education (UG and PG only)\n\nRULES:\n\nNAME:\n- Extract the full name exactly as written in the resume\n\nPROFILES & CONTACT:\n- Extract only explicitly mentioned information\n- Allowed: Email, phone number, LinkedIn, other professional profile links\n- Do not guess or generate links\n- If a platform is mentioned without a link, return null\n- Normalize URLs (remove tracking parameters)\n\nSKILLS:\n- Extract only skills explicitly mentioned in the resume\n- Focus on sales and business development relevance\n- Include:\n  - Languages spoken\n  - Soft skills\n- Do not infer skills\n- Do not duplicate skills\n\nSALES ACHIEVEMENTS:\n- Extract quantifiable metrics wherever mentioned\n- Extract exact numbers and percentages as written\n\nEDUCATION:\n- Extract undergraduate (UG) and postgraduate (PG) details only\n- Ignore 10th / 12th or school-level education\n\nWORK EXPERIENCE:\n- Extract ALL sales, business development, or account management experience\n- For each role, extract:\n  - Company name\n  - Job title\n  - Duration\n  - Key responsibilities\n  - Achievements (with metrics if available)\n- Calculate total years of sales experience\n- Identify sales type (B2B, B2C, Enterprise, SMB) if mentioned\n\nOUTPUT RULES:\n- Return ONLY valid JSON\n- Do not add explanations or extra text\n- Follow the output structure exactly\n- Preserve exact numbers and percentages from resume\n\nOUTPUT FORMAT:\n{\n  \"name\": null,\n  \"profiles\": {\n    \"linkedin\": null,\n    \"email\": null,\n    \"phone\": null,\n    \"other\": []\n  },\n  \"skills\": [],\n  \"sales_achievements\": [],\n  \"experience_years\": null,\n  \"education\": {\n    \"undergraduate\": null,\n    \"postgraduate\": null\n  },\n  \"work_experience\": [\n    {\n      \"company\": null,\n      \"role\": null,\n      \"duration\": null,\n      \"sales_type\": \"B2B|B2C|ENTERPRISE|SMB|MIXED|UNKNOWN\",\n      \"key_responsibilities\": [],\n      \"achievements\": []\n    }\n  ]\n}\n\nRESUME TEXT:\n{{ $('Extract from File').item.json.text }}\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1680,
+        320
+      ],
+      "id": "7716419b-3302-4828-ba7b-714b87dc8446",
+      "name": "Sales Profile Modal For extraction",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6bq6TIwr8dtcN2T",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Get the AI text output\nconst text =\n  items[0].json.output[0].content[0].text;\n\nconst cleaned = text\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst parsedJson = JSON.parse(cleaned);\n\nreturn { json: {resumeParsed: parsedJson} };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        -128
+      ],
+      "id": "bb1f34ac-a1b8-486d-ba37-0ba1ff30e6e6",
+      "name": "Code in Data Extractor of Resume Ops"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2288,
+        96
+      ],
+      "id": "63b49613-0876-4880-8fde-f064957a093c",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6bq6TIwr8dtcN2T",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1F7p2LCzzFkWnnygelLSt1X8Tghj7lSJ0zOwmgN1So8g/edit"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        2448,
+        80
+      ],
+      "id": "f53046f8-2683-4231-84e7-2b7a737aa18a",
+      "name": "Get a document in Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "HawPhEVYdCmqc67r",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Resume Text: {{ $('Extract from File').item.json.text }}\nParsed Resume Data: {{ $json.resumeParsed }}\n",
+        "options": {
+          "systemMessage": "You are an Expert Resume Evaluation Agent for Customer Support & Operations roles that provides TWO independent scoring perspectives:\n\n1) ATS Score (0–100): Universal ATS compatibility and resume quality\n2) Hiring Score (0–100): Custom evaluation strictly based on the provided Job Requirements\n\nYour goal is to evaluate candidates objectively while PRIORITIZING RELEVANT EXPERIENCE, JOB STABILITY, and REQUIREMENT ALIGNMENT.\n\n════════════════════════════════════\nINPUTS YOU WILL RECEIVE\n════════════════════════════════════\n1. Resume Text (raw extracted text)\n2. Parsed Resume Data (JSON: skills, experience, education)\n3. Job Requirements Document (supreme authority)\n\n════════════════════════════════════\nPART 1: ATS SCORE (0–100)\n════════════════════════════════════\nApply UNIVERSAL ATS standards only:\n- Clean formatting & parsability\n- Clear section headings\n- Keyword structure (not job-specific)\n- Consistent timeline\n- No graphics or tables blocking parsing\n- Contact information clarity\n\n❗ DO NOT consider job requirements here.\n\n════════════════════════════════════\nPART 2: HIRING SCORE (0–100)\n════════════════════════════════════\nEvaluate ONLY against the Job Requirements document.\n\nGLOBAL RULE:\nEXPERIENCE RELEVANCE and JOB STABILITY are the PRIMARY factors for operations/support roles. Skills and tools are SECONDARY validators.\n\n────────────────────────────────────\n1) RELEVANT EXPERIENCE (40 pts)\n────────────────────────────────────\n\nA. Role-Specific Experience (25 pts)\n- Extract required experience type from JD (customer support, operations, etc.)\n- Direct experience in EXACT role → 25 pts\n- Direct experience in SIMILAR role (e.g., customer service for support) → 20 pts\n- Related experience (e.g., sales for support role) → 10 pts\n- Unrelated experience → 0 pts\n\nCalculation:\n- If JD requires \"2 years customer support\":\n  * 2+ years in customer support → 25 pts\n  * 2+ years in customer service/help desk → 20 pts\n  * 2+ years in sales/operations → 10 pts\n  * Less than required years → proportional reduction\n\nB. Total Experience (10 pts)\n- Meets or exceeds total experience requirement → 10 pts\n- 1 year below → 7 pts\n- 2 years below → 4 pts\n- 3+ years below → 0 pts\n\nC. Industry/Domain Match (5 pts)\n- Same industry as JD → 5 pts\n- Related industry → 3 pts\n- Different industry → 0 pts\n\n────────────────────────────────────\n2) JOB STABILITY (20 pts)\n────────────────────────────────────\n\nCalculate average tenure per job:\n- Average tenure ≥ 2 years → 20 pts\n- Average tenure 1.5–2 years → 15 pts\n- Average tenure 1–1.5 years → 10 pts\n- Average tenure 6 months–1 year → 5 pts\n- Average tenure < 6 months → 0 pts\n\nTenure Bonus:\n- If candidate has 3+ years at one company → +5 bonus pts (max 25 total)\n\nRed Flags (deductions):\n- 3+ job changes in last 2 years → -10 pts\n- Employment gaps > 6 months (unexplained) → -5 pts per gap\n\n────────────────────────────────────\n3) MUST-HAVE REQUIREMENTS (15 pts)\n────────────────────────────────────\n\nA. Core Competencies (10 pts)\nExtract required competencies from JD:\n- Customer handling/communication → 3 pts\n- Problem-solving/troubleshooting → 3 pts\n- Process adherence/documentation → 2 pts\n- Multitasking/time management → 2 pts\n\nAward based on evidence in resume (achievements, responsibilities, metrics)\n\nB. Education (5 pts)\n- Meets requirement → 5 pts\n- Related degree → 3 pts\n- Compensating experience (5+ years) → up to 5 pts\n- Below requirement → 0 pts\n\n────────────────────────────────────\n4) TOOLS & TECHNICAL SKILLS (15 pts)\n────────────────────────────────────\n\nA. Required Tools/Systems (10 pts)\n- CRM tools (Salesforce, Zendesk, Freshdesk, etc.) → 4 pts\n- Ticketing systems → 3 pts\n- Communication platforms (Zoom, Teams, Slack) → 2 pts\n- Other required tools → 1 pt\n\nAward proportionally based on number of required tools candidate has used.\n\nB. Nice-to-Have Tools (5 pts)\n- Preferred/additional tools from JD → award proportionally\n- Advanced tool proficiency (certifications, power user) → bonus points\n\nRule:\nTool experience validates capability but does NOT replace relevant work experience.\n\n────────────────────────────────────\n5) PERFORMANCE INDICATORS (10 pts)\n────────────────────────────────────\n\nA. Quantifiable Achievements (7 pts)\n- Customer satisfaction scores/CSAT improvements → 3 pts\n- Ticket resolution metrics/SLA achievements → 2 pts\n- Process improvements/efficiency gains → 2 pts\n\nB. Awards & Recognition (3 pts)\n- Employee of the month/quarter → 2 pts\n- Customer service awards → 3 pts\n- Performance-based promotions → 2 pts\n\n────────────────────────────────────\n6) SOFT SKILLS & CULTURAL FIT (bonus: up to 5 pts)\n────────────────────────────────────\n- Language proficiency (if required) → 2 pts\n- Team collaboration evidence → 2 pts\n- Learning & adaptability indicators → 1 pt\n\n════════════════════════════════════\nHIRING DECISION RULES\n════════════════════════════════════\n91–100 → MUST_INTERVIEW\n70–90  → RECOMMEND_INTERVIEW\n55–69  → CONDITIONAL_INTERVIEW\n40–54  → HOLD\n<40    → REJECT\n\n❗ SAFETY RULES:\n1. If relevant experience requirement is met AND job stability is strong (avg tenure ≥ 1.5 years), Hiring Score MUST NOT be below 60.\n2. Frequent job hopping (avg tenure < 1 year) caps maximum score at 70, regardless of other factors.\n3. Missing required tools reduces score but does NOT disqualify if experience is strong.\n\n════════════════════════════════════\nOUTPUT FORMAT (STRICT JSON ONLY)\n════════════════════════════════════\n{\n  \"ats_score\": 0,\n  \"hiring_score\": 0,\n  \"hiring_recommendation\": \"MUST_INTERVIEW|RECOMMEND_INTERVIEW|CONDITIONAL|HOLD|REJECT\",\n  \"key_reason\": \"Max 30 words explaining the decision\",\n  \"stability_metrics\": {\n    \"average_tenure_years\": 0,\n    \"total_jobs\": 0,\n    \"longest_tenure_years\": 0,\n    \"stability_flag\": \"STABLE|MODERATE|UNSTABLE\"\n  },\n  \"experience_breakdown\": {\n    \"total_years\": 0,\n    \"relevant_role_years\": 0,\n    },\n  \"tools_identified\": [],\n}\n\nRules:\n- Evidence-based scoring only\n- Requirements document is supreme authority\n- Prioritize EXPERIENCE and STABILITY over tools\n- Do NOT add explanations outside JSON\n- Calculate stability metrics from work history timeline\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        2288,
+        -128
+      ],
+      "id": "8f40073b-9c2e-466b-a5ca-36746d8cf2a6",
+      "name": "AI Agent For Ops"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.first().json.output;\n\n\nconst cleaned = items\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst parsedJson = JSON.parse(cleaned);\n\nreturn { json:  parsedJson };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2624,
+        -128
+      ],
+      "id": "3eb7c832-a184-4d8d-992a-c5bd3054df9f",
+      "name": "Code for Github Data Exrtraction2"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0",
+          "mode": "list",
+          "cachedResultName": "Hiring Agent Screening",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 579626118,
+          "mode": "list",
+          "cachedResultName": "Operations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit#gid=579626118"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Candidate Name ": "={{ $('Code in Data Extractor of Resume Ops').item.json.resumeParsed.name }}",
+            "Role": "={{ $('Code in JavaScript').item.json.detected_role }}",
+            "Resume ATS Score": "={{ $json.ats_score }}",
+            "Agent Screening Score": "={{ $json.hiring_score }}",
+            "Confidence Score": "={{ $('Code in JavaScript').item.json.confidence_score }}",
+            "Hiring Recomandation": "={{ $json.hiring_recommendation }}",
+            "Key Reason ": "={{ $json.key_reason }}",
+            "Resume/ Profile link": "=",
+            "Experience": "={{ $json.experience_breakdown.total_years }}",
+            "Education": "=UnderGraduation: {{ JSON.stringify($('Code in Data Extractor of Resume Ops').item.json.resumeParsed.education.undergraduate) }}\nPostGraduation: {{ JSON.stringify($('Code in Data Extractor of Resume Ops').item.json.resumeParsed.education.postgraduate) }}\n",
+            "Skills": "={{ ($('Code in Data Extractor of Resume Ops').item.json.resumeParsed.skills.softSkills || []).join(', ') }}\n",
+            "Stability": "=Average Tenure: {{ $json.stability_metrics.average_tenure_years }},\nTotal Jobs: {{ $json.stability_metrics.total_jobs }}\n"
+          },
+          "matchingColumns": [
+            "Sr No."
+          ],
+          "schema": [
+            {
+              "id": "Sr No.",
+              "displayName": "Sr No.",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Candidate Name ",
+              "displayName": "Candidate Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resume ATS Score",
+              "displayName": "Resume ATS Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Agent Screening Score",
+              "displayName": "Agent Screening Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Confidence Score",
+              "displayName": "Confidence Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hiring Recomandation",
+              "displayName": "Hiring Recomandation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Key Reason ",
+              "displayName": "Key Reason ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resume/ Profile link",
+              "displayName": "Resume/ Profile link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Education",
+              "displayName": "Education",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Skills",
+              "displayName": "Skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stability",
+              "displayName": "Stability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Most Stable Tenure",
+              "displayName": "Most Stable Tenure",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2880,
+        -128
+      ],
+      "id": "7371634c-5ab6-4502-b636-fee880e76b84",
+      "name": "Append row in sheet For Ops",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DXJonhlgSSxgJDxq",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1F7p2LCzzFkWnnygelLSt1X8Tghj7lSJ0zOwmgN1So8g/edit"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        2368,
+        528
+      ],
+      "id": "924e36d4-132b-4c29-a285-32250760afcc",
+      "name": "Get a document in Google Docs1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "HawPhEVYdCmqc67r",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Resume Text: {{ $('Extract from File').item.json.text }}\nParsed Resume Data: {{ $json.resumeParsed }}\n",
+        "options": {
+          "systemMessage": "You are an Expert Resume Evaluation Agent for Customer Support & Operations roles that provides TWO independent scoring perspectives:\n\n1) ATS Score (0–100): Universal ATS compatibility and resume quality\n2) Hiring Score (0–100): Custom evaluation strictly based on the provided Job Requirements\n\nYour goal is to evaluate candidates objectively while PRIORITIZING RELEVANT EXPERIENCE, JOB STABILITY, and REQUIREMENT ALIGNMENT.\n\n════════════════════════════════════\nINPUTS YOU WILL RECEIVE\n════════════════════════════════════\n1. Resume Text (raw extracted text)\n2. Parsed Resume Data (JSON: skills, experience, education)\n3. Job Requirements Document (supreme authority)\n\n════════════════════════════════════\nPART 1: ATS SCORE (0–100)\n════════════════════════════════════\nApply UNIVERSAL ATS standards only:\n- Clean formatting & parsability\n- Clear section headings\n- Keyword structure (not job-specific)\n- Consistent timeline\n- No graphics or tables blocking parsing\n- Contact information clarity\n\n❗ DO NOT consider job requirements here.\n\n════════════════════════════════════\nPART 2: HIRING SCORE (0–100)\n════════════════════════════════════\nEvaluate ONLY against the Job Requirements document.\n\nGLOBAL RULE:\nEXPERIENCE RELEVANCE and JOB STABILITY are the PRIMARY factors for operations/support roles. Skills and tools are SECONDARY validators.\n\n────────────────────────────────────\n1) RELEVANT EXPERIENCE (40 pts)\n────────────────────────────────────\n\nA. Role-Specific Experience (25 pts)\n- Extract required experience type from JD (customer support, operations, etc.)\n- Direct experience in EXACT role → 25 pts\n- Direct experience in SIMILAR role (e.g., customer service for support) → 20 pts\n- Related experience (e.g., sales for support role) → 10 pts\n- Unrelated experience → 0 pts\n\nCalculation:\n- If JD requires \"2 years customer support\":\n  * 2+ years in customer support → 25 pts\n  * 2+ years in customer service/help desk → 20 pts\n  * 2+ years in sales/operations → 10 pts\n  * Less than required years → proportional reduction\n\nB. Total Experience (10 pts)\n- Meets or exceeds total experience requirement → 10 pts\n- 1 year below → 7 pts\n- 2 years below → 4 pts\n- 3+ years below → 0 pts\n\nC. Industry/Domain Match (5 pts)\n- Same industry as JD → 5 pts\n- Related industry → 3 pts\n- Different industry → 0 pts\n\n────────────────────────────────────\n2) JOB STABILITY (20 pts)\n────────────────────────────────────\n\nCalculate average tenure per job:\n- Average tenure ≥ 2 years → 20 pts\n- Average tenure 1.5–2 years → 15 pts\n- Average tenure 1–1.5 years → 10 pts\n- Average tenure 6 months–1 year → 5 pts\n- Average tenure < 6 months → 0 pts\n\nTenure Bonus:\n- If candidate has 3+ years at one company → +5 bonus pts (max 25 total)\n\nRed Flags (deductions):\n- 3+ job changes in last 2 years → -10 pts\n- Employment gaps > 6 months (unexplained) → -5 pts per gap\n\n────────────────────────────────────\n3) MUST-HAVE REQUIREMENTS (15 pts)\n────────────────────────────────────\n\nA. Core Competencies (10 pts)\nExtract required competencies from JD:\n- Customer handling/communication → 3 pts\n- Problem-solving/troubleshooting → 3 pts\n- Process adherence/documentation → 2 pts\n- Multitasking/time management → 2 pts\n\nAward based on evidence in resume (achievements, responsibilities, metrics)\n\nB. Education (5 pts)\n- Meets requirement → 5 pts\n- Related degree → 3 pts\n- Compensating experience (5+ years) → up to 5 pts\n- Below requirement → 0 pts\n\n────────────────────────────────────\n4) TOOLS & TECHNICAL SKILLS (15 pts)\n────────────────────────────────────\n\nA. Required Tools/Systems (10 pts)\n- CRM tools (Salesforce, Zendesk, Freshdesk, etc.) → 4 pts\n- Ticketing systems → 3 pts\n- Communication platforms (Zoom, Teams, Slack) → 2 pts\n- Other required tools → 1 pt\n\nAward proportionally based on number of required tools candidate has used.\n\nB. Nice-to-Have Tools (5 pts)\n- Preferred/additional tools from JD → award proportionally\n- Advanced tool proficiency (certifications, power user) → bonus points\n\nRule:\nTool experience validates capability but does NOT replace relevant work experience.\n\n────────────────────────────────────\n5) PERFORMANCE INDICATORS (10 pts)\n────────────────────────────────────\n\nA. Quantifiable Achievements (7 pts)\n- Customer satisfaction scores/CSAT improvements → 3 pts\n- Ticket resolution metrics/SLA achievements → 2 pts\n- Process improvements/efficiency gains → 2 pts\n\nB. Awards & Recognition (3 pts)\n- Employee of the month/quarter → 2 pts\n- Customer service awards → 3 pts\n- Performance-based promotions → 2 pts\n\n────────────────────────────────────\n6) SOFT SKILLS & CULTURAL FIT (bonus: up to 5 pts)\n────────────────────────────────────\n- Language proficiency (if required) → 2 pts\n- Team collaboration evidence → 2 pts\n- Learning & adaptability indicators → 1 pt\n\n════════════════════════════════════\nHIRING DECISION RULES\n════════════════════════════════════\n91–100 → MUST_INTERVIEW\n70–90  → RECOMMEND_INTERVIEW\n55–69  → CONDITIONAL_INTERVIEW\n40–54  → HOLD\n<40    → REJECT\n\n❗ SAFETY RULES:\n1. If relevant experience requirement is met AND job stability is strong (avg tenure ≥ 1.5 years), Hiring Score MUST NOT be below 60.\n2. Frequent job hopping (avg tenure < 1 year) caps maximum score at 70, regardless of other factors.\n3. Missing required tools reduces score but does NOT disqualify if experience is strong.\n\n════════════════════════════════════\nOUTPUT FORMAT (STRICT JSON ONLY)\n════════════════════════════════════\n{\n  \"ats_score\": 0,\n  \"hiring_score\": 0,\n  \"hiring_recommendation\": \"MUST_INTERVIEW|RECOMMEND_INTERVIEW|CONDITIONAL|HOLD|REJECT\",\n  \"key_reason\": \"Max 30 words explaining the decision\",\n  \"stability_metrics\": {\n    \"average_tenure_years\": 0,\n    \"total_jobs\": 0,\n    \"longest_tenure_years\": 0,\n    \"stability_flag\": \"STABLE|MODERATE|UNSTABLE\"\n  },\n  \"experience_breakdown\": {\n    \"total_years\": 0,\n    \"relevant_role_years\": 0,\n    },\n  \"tools_identified\": [],\n}\n\nRules:\n- Evidence-based scoring only\n- Requirements document is supreme authority\n- Prioritize EXPERIENCE and STABILITY over tools\n- Do NOT add explanations outside JSON\n- Calculate stability metrics from work history timeline\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        2208,
+        320
+      ],
+      "id": "c21490c3-db45-4575-ae2d-6e21521f046a",
+      "name": "AI Agent For Sales"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Get the AI text output\nconst text =\n  items[0].json.output[0].content[0].text;\n\nconst cleaned = text\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst parsedJson = JSON.parse(cleaned);\n\nreturn { json: {resumeParsed: parsedJson} };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        320
+      ],
+      "id": "e47f6d9d-3f21-4c37-a6ff-5dbfad6ef195",
+      "name": "Code in Data Extractor of Resume Sales"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2208,
+        544
+      ],
+      "id": "2a94ff0c-fd37-498f-b242-48a1da019ea7",
+      "name": "OpenAI Chat Model Sales",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6bq6TIwr8dtcN2T",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.first().json.output;\n\n\nconst cleaned = items\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst parsedJson = JSON.parse(cleaned);\n\nreturn { json:  parsedJson };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2544,
+        320
+      ],
+      "id": "560b3f43-c10d-4e51-9f0b-a49b320e4ed3",
+      "name": "Code for Sales Data Exrtraction"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0",
+          "mode": "list",
+          "cachedResultName": "Hiring Agent Screening",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1157179987,
+          "mode": "list",
+          "cachedResultName": "Sales",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit#gid=1157179987"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Candidate Name ": "={{ $('Code in Data Extractor of Resume Sales').item.json.resumeParsed.name }}",
+            "Role": "={{ $('Code in JavaScript').item.json.detected_role }}",
+            "Resume ATS Score": "={{ $json.ats_score }}",
+            "Agent Screening Score": "={{ $json.hiring_score }}",
+            "Confidence Score": "={{ $('Code in JavaScript').item.json.confidence_score }}",
+            "Hiring Recomandation": "={{ $json.hiring_recommendation }}",
+            "Key Reason ": "={{ $json.key_reason }}",
+            "Resume/ Profile link": "=",
+            "Experience": "={{ $json.experience_breakdown.total_years }}",
+            "Education": "=UnderGraduation: {{ JSON.stringify($('Code in Data Extractor of Resume Sales').item.json.resumeParsed.education.undergraduate) }}\nPostGraduation: {{ JSON.stringify($('Code in Data Extractor of Resume Sales').item.json.resumeParsed.education.postgraduate) }}\n",
+            "Skills": "={{ ($('Code in Data Extractor of Resume Sales').item.json.resumeParsed.skills.softSkills || []).join(', ') }}\n",
+            "Stability": "=Average Tenure: {{ $json.stability_metrics.average_tenure_years }},\nTotal Jobs: {{ $json.stability_metrics.total_jobs }}\n"
+          },
+          "matchingColumns": [
+            "Sr No."
+          ],
+          "schema": [
+            {
+              "id": "Sr No.",
+              "displayName": "Sr No.",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Candidate Name ",
+              "displayName": "Candidate Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resume ATS Score",
+              "displayName": "Resume ATS Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Agent Screening Score",
+              "displayName": "Agent Screening Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Confidence Score",
+              "displayName": "Confidence Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hiring Recomandation",
+              "displayName": "Hiring Recomandation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Key Reason ",
+              "displayName": "Key Reason ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resume/ Profile link",
+              "displayName": "Resume/ Profile link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Education",
+              "displayName": "Education",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Skills",
+              "displayName": "Skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stability",
+              "displayName": "Stability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Most Stable Tenure",
+              "displayName": "Most Stable Tenure",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2752,
+        320
+      ],
+      "id": "8272c8cc-8e3e-4bb1-be54-a7a27ee31059",
+      "name": "Append row in sheet For Sales",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DXJonhlgSSxgJDxq",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Profile Data Extractor fro Resume",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ops Profile Modal For extraction ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sales Profile Modal For extraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code for Github Data Exrtraction1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document in Google Docs3": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Github analyser Agent": {
+      "main": [
+        [
+          {
+            "node": "Code for Github Data Exrtraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Profile Data Extractor fro Resume": {
+      "main": [
+        [
+          {
+            "node": "Code in Data Extractor of Resume",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Data Extractor of Resume": {
+      "main": [
+        [
+          {
+            "node": "Github analyser Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code for Github Data Exrtraction": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code for Github Data Exrtraction1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ops Profile Modal For extraction ": {
+      "main": [
+        [
+          {
+            "node": "Code in Data Extractor of Resume Ops",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sales Profile Modal For extraction": {
+      "main": [
+        [
+          {
+            "node": "Code in Data Extractor of Resume Sales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent For Ops",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document in Google Docs": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent For Ops",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Data Extractor of Resume Ops": {
+      "main": [
+        [
+          {
+            "node": "AI Agent For Ops",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent For Ops": {
+      "main": [
+        [
+          {
+            "node": "Code for Github Data Exrtraction2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code for Github Data Exrtraction2": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet For Ops",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document in Google Docs1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent For Sales",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Data Extractor of Resume Sales": {
+      "main": [
+        [
+          {
+            "node": "AI Agent For Sales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model Sales": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent For Sales",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent For Sales": {
+      "main": [
+        [
+          {
+            "node": "Code for Sales Data Exrtraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code for Sales Data Exrtraction": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet For Sales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c1723dc9-d200-4963-87be-9df43bebd362",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a3e41181cca81db1c4371f67b1048b0d1668ded5c31a22cb402b2b62d8df5f7f"
+  },
+  "id": "KIY0rPpnQfAT45rt",
+  "tags": []
+}
