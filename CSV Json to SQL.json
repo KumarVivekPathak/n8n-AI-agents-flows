@@ -1,0 +1,672 @@
+{
+  "name": "CSV Json to SQL",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -336,
+        -544
+      ],
+      "id": "baa63c4b-c9ad-4242-a0d0-3f754d38e053",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "sendTo": "ravi@thebatraanumerology.com",
+        "subject": "Data Uploaded",
+        "emailType": "text",
+        "message": "=Hi Ravi,\n\nData has been uploaded into the sheet.\n\nTotal Records = ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        -352
+      ],
+      "id": "2c470943-6d33-41f0-ac23-7f523dc13b76",
+      "name": "Send a message",
+      "webhookId": "d8142e17-6223-4d94-af08-f959c9215806",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "DH0iXV6RKBOMJNYB",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "aab63c5e-034a-47ee-9147-84a1815cef76",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "captured",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "776b91de-5e1e-45ff-be00-acbaa9fd3740",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "created",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "9bdbc263-b62d-442c-8447-4c7d7a715d15",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "refunded",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1152,
+        -32
+      ],
+      "id": "6dcda1e2-3c48-41c7-aee1-657382b115c1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -528,
+        -544
+      ],
+      "id": "02cb0fe3-fdfc-4949-a7c0-257a20d347c7",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "JnMIx7HnhJLJI297",
+          "name": "Ravi G Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "function formatDate(input) {\n  if (!input) return null;\n\n  const parts = input.split(\" \");\n  if (!parts[0]) return null;\n\n  const d = parts[0].split(\"/\");\n  if (d.length !== 3) return null;\n\n  const day = d[0].padStart(2, \"0\");\n  const month = d[1].padStart(2, \"0\");\n  const year = d[2];\n  const time = parts[1] || \"00:00:00\";\n\n  return `${year}-${month}-${day} ${time}`;\n}\n\nconst output = [];\n\nfor (const item of items) {\n\n  let notes = {};\n  try {\n    notes = item.json.notes ? JSON.parse(item.json.notes) : {};\n  } catch (e) {\n    notes = {};\n  }\n\n  const name =\n    notes.name ||\n    notes.full_name ||\n    (notes.first_name && notes.last_name\n      ? notes.first_name + \" \" + notes.last_name\n      : null);\n\n  const course_name =\n    notes.course ||\n    notes.course_name ||\n    notes.report ||\n    notes.reports ||\n    notes.report_name ||\n    null;\n\n  output.push({\n    json: {\n      order_id: item.json.order_id,\n      created_at: formatDate(item.json.created_at),\n      name: name,\n      email: item.json.email,\n      course_name: course_name,\n      amount: Number(item.json.amount) || 0,\n      contact: item.json.contact,\n      phone: notes.phone || null,\n      city: notes.city || null,\n      dob: notes.dob || null,\n      payment_id: item.json.id,\n      status: item.json.status,\n      currency: item.json.currency,\n      auth_code: item.json.Auth_code,\n      international: Number(item.json.international) || 0,\n      method: item.json.method,\n      amount_refunded: Number(item.json.amount_refunded) || 0,\n      vpa: item.json.vpa,\n      fee: Number(item.json.fee) || 0,\n      tax: Number(item.json.tax) || 0,\n      payments_rrn: item.json.Payments_RRN,\n      flow: item.json.flow\n    }\n  });\n}\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -816
+      ],
+      "id": "ccde408d-96b4-44b6-85eb-66c72432cf4d",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "field": "order_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        1008,
+        -352
+      ],
+      "id": "a8be19c7-bc03-4d28-90cb-a2018ab8cd82",
+      "name": "Failed Summary"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "field": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        1184,
+        -528
+      ],
+      "id": "60f4a357-f7d8-4dc3-81d7-2689f57e531a",
+      "name": "Insert Summary"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1RDPdw16OKBwH8Wfti2okpvsMTfzWO8fM",
+          "mode": "list",
+          "cachedResultName": "CSV/JSON",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1RDPdw16OKBwH8Wfti2okpvsMTfzWO8fM"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        -544
+      ],
+      "id": "aab90b64-f5e6-4eb3-a9f5-2f180dbef566",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "JnMIx7HnhJLJI297",
+          "name": "Ravi G Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "25be38cd-0be5-485c-a89f-f9a6962f89b1",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -688,
+        -544
+      ],
+      "id": "e4616c32-2768-477c-aae4-06f6b0f47841",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "payment_table",
+          "mode": "list",
+          "cachedResultName": "payment_table"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "payment_id",
+        "valueToMatchOn": "={{ $json.payment_id }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "order_id",
+              "value": "={{ $json.order_id }}"
+            },
+            {
+              "column": "created_at",
+              "value": "={{ $json.created_at }}"
+            },
+            {
+              "column": "name",
+              "value": "={{ \n$json.name ||\n$json.full_name ||\n$json.first_name + \" \" + $json.last_name\n}}"
+            },
+            {
+              "column": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "column": "course_name",
+              "value": "={{ $json.report_name || \n$json.report || \n$json.course_name || \n$json.course || \n$json.mango_name ||\nnull }}"
+            },
+            {
+              "column": "amount",
+              "value": "={{ $json.amount }}"
+            },
+            {
+              "column": "contact",
+              "value": "={{ $json.contact }}"
+            },
+            {
+              "column": "phone",
+              "value": "={{ $json.phone }}"
+            },
+            {
+              "column": "city",
+              "value": "={{ $json.city }}"
+            },
+            {
+              "column": "dob",
+              "value": "={{ $json.dob }}"
+            },
+            {
+              "column": "status",
+              "value": "={{ $json.status }}"
+            },
+            {
+              "column": "currency",
+              "value": "={{ $json.currency }}"
+            },
+            {
+              "column": "auth_code",
+              "value": "={{ $json.auth_code }}"
+            },
+            {
+              "column": "international",
+              "value": "={{ $json.international }}"
+            },
+            {
+              "column": "method",
+              "value": "={{ $json.method }}"
+            },
+            {
+              "column": "amount_refunded",
+              "value": "={{ $json.amount_refunded }}"
+            },
+            {
+              "column": "vpa",
+              "value": "={{ $json.vpa }}"
+            },
+            {
+              "column": "fee",
+              "value": "={{ $json.fee }}"
+            },
+            {
+              "column": "tax",
+              "value": "={{ $json.tax }}"
+            },
+            {
+              "column": "payments_rrn",
+              "value": "={{ $json.payments_rrn }}"
+            },
+            {
+              "column": "flow",
+              "value": "={{ $json.flow }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        928,
+        -544
+      ],
+      "id": "f3eb0a5c-f9cc-426b-b6d2-13e77d914ea3",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "mySql": {
+          "id": "ulECw5yO6l5nxTGn",
+          "name": "divinesofttest_tbnoffice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Extract JSON + filter required statuses\nconst filteredData = items\n  .map(i => i.json)\n  .filter(item =>\n    item.status === \"captured\" ||\n    item.status === \"created\" ||\n    item.status === \"refunded\"\n  );\n\n// Return as ONE single item containing filtered array\nreturn [\n  {\n    json: {\n      allData: filteredData\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        -816
+      ],
+      "id": "671a1206-6edb-4384-98cf-4faa8de62333",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfunction formatDate(input) {\n  if (!input) return null;\n\n  const parts = input.split(\" \");\n  if (!parts[0]) return null;\n\n  const d = parts[0].split(\"/\");\n  if (d.length !== 3) return null;\n\n  const day = d[0].padStart(2, \"0\");\n  const month = d[1].padStart(2, \"0\");\n  const year = d[2];\n  const time = parts[1] || \"00:00:00\";\n\n  return `${year}-${month}-${day} ${time}`;\n}\n\nconst output = [];\n\nfor (const i of items) {\n  const item = i.json;\n\n  // Filter status\n  if (\n    item.status !== \"captured\" &&\n    item.status !== \"created\" &&\n    item.status !== \"refunded\"\n  ) continue;\n\n  let notes = {};\n  try {\n    notes = item.notes ? JSON.parse(item.notes) : {};\n  } catch (e) {\n    notes = {};\n  }\n\n  const name =\n    notes.name ||\n    notes.full_name ||\n    (notes.first_name && notes.last_name\n      ? notes.first_name + \" \" + notes.last_name\n      : null);\n\n  const course_name =\n    notes.course ||\n    notes.course_name ||\n    notes.report ||\n    notes.reports ||\n    notes.report_name ||\n    null;\n\n  output.push({\n    json: {\n      order_id: item.order_id,\n      created_at: formatDate(item.created_at),\n      name,\n      email: item.email,\n      course_name,\n      amount: Number(item.amount) || 0,\n      contact: item.contact,\n      phone: notes.phone || null,\n      city: notes.city || null,\n      dob: notes.dob || null,\n      payment_id: item.id,\n      status: item.status,\n      currency: item.currency,\n      auth_code: item.Auth_code,\n      international: Number(item.international) || 0,\n      method: item.method,\n      amount_refunded: Number(item.amount_refunded) || 0,\n      vpa: item.vpa,\n      fee: Number(item.fee) || 0,\n      tax: Number(item.tax) || 0,\n      payments_rrn: item.Payments_RRN,\n      flow: item.flow\n    }\n  });\n}\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        -544
+      ],
+      "id": "c600d3f8-8e79-4d0e-8256-4c3aa3b7dae6",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "payment_table",
+          "mode": "list",
+          "cachedResultName": "payment_table"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "payment_id",
+        "valueToMatchOn": "={{ $json.payment_id }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "order_id",
+              "value": "={{ $json.order_id }}"
+            },
+            {
+              "column": "created_at",
+              "value": "={{ $json.created_at }}"
+            },
+            {
+              "column": "name",
+              "value": "={{ \n$json.name ||\n$json.full_name ||\n$json.first_name + \" \" + $json.last_name\n}}"
+            },
+            {
+              "column": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "column": "course_name",
+              "value": "={{ $json.report_name || \n$json.report || \n$json.course_name || \n$json.course || \n$json.mango_name ||\nnull }}"
+            },
+            {
+              "column": "amount",
+              "value": "={{ $json.amount }}"
+            },
+            {
+              "column": "contact",
+              "value": "={{ $json.contact }}"
+            },
+            {
+              "column": "phone",
+              "value": "={{ $json.phone }}"
+            },
+            {
+              "column": "city",
+              "value": "={{ $json.city }}"
+            },
+            {
+              "column": "dob",
+              "value": "={{ $json.dob }}"
+            },
+            {
+              "column": "status",
+              "value": "={{ $json.status }}"
+            },
+            {
+              "column": "currency",
+              "value": "={{ $json.currency }}"
+            },
+            {
+              "column": "auth_code",
+              "value": "={{ $json.auth_code }}"
+            },
+            {
+              "column": "international",
+              "value": "={{ $json.international }}"
+            },
+            {
+              "column": "method",
+              "value": "={{ $json.method }}"
+            },
+            {
+              "column": "amount_refunded",
+              "value": "={{ $json.amount_refunded }}"
+            },
+            {
+              "column": "vpa",
+              "value": "={{ $json.vpa }}"
+            },
+            {
+              "column": "fee",
+              "value": "={{ $json.fee }}"
+            },
+            {
+              "column": "tax",
+              "value": "={{ $json.tax }}"
+            },
+            {
+              "column": "payments_rrn",
+              "value": "={{ $json.payments_rrn }}"
+            },
+            {
+              "column": "flow",
+              "value": "={{ $json.flow }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        912,
+        -816
+      ],
+      "id": "9ca949c7-586f-4686-a84c-b12c62811cfb",
+      "name": "Insert or update rows in a table1",
+      "credentials": {
+        "mySql": {
+          "id": "ulECw5yO6l5nxTGn",
+          "name": "divinesofttest_tbnoffice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "{{ $json.query }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        304,
+        -544
+      ],
+      "id": "48eda537-64d4-45a9-986e-dd48a61d9cb1",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "mySql": {
+          "id": "ulECw5yO6l5nxTGn",
+          "name": "divinesofttest_tbnoffice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst chunkSize = 1000; // adjust if needed\nconst output = [];\n\n// Escape helper (important for SQL safety)\nfunction escapeValue(value) {\n  if (value === null || value === undefined) return \"NULL\";\n  return `'${String(value).replace(/'/g, \"''\")}'`;\n}\n\nfor (let i = 0; i < items.length; i += chunkSize) {\n\n  const chunk = items.slice(i, i + chunkSize);\n\n  const values = chunk.map(i => {\n    const d = i.json;\n\n    return `(\n      ${escapeValue(d.order_id)},\n      ${escapeValue(d.created_at)},\n      ${escapeValue(d.name)},\n      ${escapeValue(d.email)},\n      ${escapeValue(d.course_name)},\n      ${Number(d.amount) || 0},\n      ${escapeValue(d.contact)},\n      ${escapeValue(d.phone)},\n      ${escapeValue(d.city)},\n      ${escapeValue(d.dob)},\n      ${escapeValue(d.payment_id)},\n      ${escapeValue(d.status)},\n      ${escapeValue(d.currency)},\n      ${escapeValue(d.auth_code)},\n      ${Number(d.international) || 0},\n      ${escapeValue(d.method)},\n      ${Number(d.amount_refunded) || 0},\n      ${escapeValue(d.vpa)},\n      ${Number(d.fee) || 0},\n      ${Number(d.tax) || 0},\n      ${escapeValue(d.payments_rrn)},\n      ${escapeValue(d.flow)}\n    )`;\n  }).join(\",\");\n\n  const query = `\n    INSERT INTO payment_table (\n      order_id,\n      created_at,\n      name,\n      email,\n      course_name,\n      amount,\n      contact,\n      phone,\n      city,\n      dob,\n      payment_id,\n      status,\n      currency,\n      auth_code,\n      international,\n      method,\n      amount_refunded,\n      vpa,\n      fee,\n      tax,\n      payments_rrn,\n      flow\n    )\n    VALUES ${values}\n    ON DUPLICATE KEY UPDATE\n      status = VALUES(status),\n      amount_refunded = VALUES(amount_refunded),\n      fee = VALUES(fee),\n      tax = VALUES(tax);\n  `;\n\n  output.push({ json: { query } });\n}\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -544
+      ],
+      "id": "954987c2-48ca-488c-acc4-dbe2e07a9bb8",
+      "name": "Code in JavaScript3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Failed Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Failed Summary": {
+      "main": [
+        []
+      ]
+    },
+    "Insert Summary": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert or update rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Insert Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "3557bf40-9ebd-43a0-8f10-35601115b045",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9fbe8f1e854a8e9e809037417b5a57fda11bd08c2ca2c1f51a7ebaef728745b9"
+  },
+  "id": "tb1yHvmwDcvt3GTQ",
+  "tags": []
+}
