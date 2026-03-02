@@ -3,76 +3,16 @@
   "nodes": [
     {
       "parameters": {
-        "pollTimes": {
-          "item": [
-            {
-              "mode": "everyMinute"
-            }
-          ]
-        },
-        "triggerOn": "specificFolder",
-        "folderToWatch": {
-          "__rl": true,
-          "value": "1m3BbOkcfIv8Y5Htso7bsL-UeGQ5an398",
-          "mode": "list",
-          "cachedResultName": "Resume Uploader For AI Agent",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1m3BbOkcfIv8Y5Htso7bsL-UeGQ5an398"
-        },
-        "event": "fileCreated",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDriveTrigger",
-      "typeVersion": 1,
-      "position": [
-        -192,
-        320
-      ],
-      "id": "cdab4fa6-753c-4c15-aa7b-a76afc99fbe2",
-      "name": "Google Drive Trigger",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "yrFIyqOiiDtqDDj7",
-          "name": "Vivek @ the batraa"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "download",
-        "fileId": {
-          "__rl": true,
-          "value": "={{ $json.id }}",
-          "mode": "id"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        48,
-        320
-      ],
-      "id": "6ee80f64-9224-492a-a4a0-dd9281f4f94e",
-      "name": "Download file",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "yrFIyqOiiDtqDDj7",
-          "name": "Vivek @ the batraa"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "pdf",
         "options": {}
       },
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        272,
-        320
+        -3136,
+        2192
       ],
-      "id": "3ca517ae-9869-4bb3-a041-a263cb736393",
+      "id": "bc6c2cfe-4241-4ee2-b73a-8e1e21730686",
       "name": "Extract from File"
     },
     {
@@ -97,15 +37,15 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2.1,
       "position": [
-        480,
-        320
+        -2928,
+        2192
       ],
-      "id": "4836e059-cde1-4528-bd39-bf5aeaa4aacf",
+      "id": "e5aa7179-d005-4d71-95de-ae856ec5c90b",
       "name": "Message a model",
       "credentials": {
         "openAiApi": {
-          "id": "W6bq6TIwr8dtcN2T",
-          "name": "OpenAi account 2"
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
         }
       }
     },
@@ -116,10 +56,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        832,
-        320
+        -2576,
+        2192
       ],
-      "id": "a516ece4-32f5-4258-94a8-a04ca19df8e4",
+      "id": "df49b169-ec04-495e-a265-08a796b66359",
       "name": "Code in JavaScript"
     },
     {
@@ -243,10 +183,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        1216,
-        272
+        -2192,
+        2144
       ],
-      "id": "3eb0ea46-aa4b-4873-a226-6dc4e92c5bdd",
+      "id": "2468d460-b199-4309-a7e1-79dac2170aba",
       "name": "Switch"
     },
     {
@@ -260,10 +200,10 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        2896,
-        -480
+        -512,
+        1392
       ],
-      "id": "f2dfd617-7b6f-4099-a08d-69ed4a094f1d",
+      "id": "e8edafde-519f-4d8e-8e6c-e8b7c961eedd",
       "name": "AI Agent"
     },
     {
@@ -279,15 +219,15 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        2880,
-        -288
+        -528,
+        1584
       ],
-      "id": "f4089918-20df-4898-adbf-031b8648c12b",
+      "id": "f0fc5155-5dd1-4a77-989c-ab98e6daee21",
       "name": "OpenAI Chat Model3",
       "credentials": {
         "openAiApi": {
-          "id": "W6bq6TIwr8dtcN2T",
-          "name": "OpenAi account 2"
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
         }
       }
     },
@@ -299,15 +239,15 @@
       "type": "n8n-nodes-base.googleDocsTool",
       "typeVersion": 2,
       "position": [
-        3056,
-        -272
+        -352,
+        1600
       ],
-      "id": "aabdb842-a61f-4f60-8754-2fbce793379f",
+      "id": "71bfa8e5-ddce-4722-9d76-8c443bb37786",
       "name": "Get a document in Google Docs3",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "HawPhEVYdCmqc67r",
-          "name": "Google Docs account"
+          "id": "3RrGPc4ghLNaad8v",
+          "name": "The Batraanumerology Docs"
         }
       }
     },
@@ -333,15 +273,15 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2.1,
       "position": [
-        2256,
-        -480
+        -1152,
+        1392
       ],
-      "id": "1815836e-7620-42d7-89ad-b50d630e7662",
+      "id": "7bc43cc6-b4dc-43f9-b32f-0262dd0179e6",
       "name": "Github analyser Agent",
       "credentials": {
         "openAiApi": {
-          "id": "W6bq6TIwr8dtcN2T",
-          "name": "OpenAi account 2"
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
         }
       }
     },
@@ -367,15 +307,15 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2.1,
       "position": [
-        1616,
-        -480
+        -1792,
+        1392
       ],
-      "id": "1a8bdca0-c51e-4699-9780-a9d3c3414d34",
+      "id": "6c2e67fb-988c-49c9-9579-bb44011d57f0",
       "name": "Profile Data Extractor fro Resume",
       "credentials": {
         "openAiApi": {
-          "id": "W6bq6TIwr8dtcN2T",
-          "name": "OpenAi account 2"
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
         }
       }
     },
@@ -386,10 +326,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2048,
-        -480
+        -1360,
+        1392
       ],
-      "id": "1e6e5130-0938-4935-b9f6-cec61aea5839",
+      "id": "5d77492a-684f-48ab-a4a4-25bc4bd79a1c",
       "name": "Code in Data Extractor of Resume"
     },
     {
@@ -399,10 +339,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2624,
-        -480
+        -784,
+        1392
       ],
-      "id": "b523c48d-ef84-4812-846e-b07c670a7cdb",
+      "id": "48b80952-8a02-4c53-a5fc-d121a183cc74",
       "name": "Code for Github Data Exrtraction"
     },
     {
@@ -412,177 +352,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3280,
-        -480
+        -128,
+        1392
       ],
-      "id": "9bad85c0-b3d6-4948-865e-baa51f82b535",
+      "id": "ab709ec0-d5d0-402e-a992-2bd7b8992597",
       "name": "Code for Github Data Exrtraction1"
-    },
-    {
-      "parameters": {
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "value": "1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0",
-          "mode": "list",
-          "cachedResultName": "Hiring Agent Screening",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit#gid=0"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "Candidate Name ": "={{ $('Code in Data Extractor of Resume').item.json.resumeParsed.name }}",
-            "Role": "={{ $('Code in JavaScript').item.json.detected_role }}",
-            "Resume ATS Score": "={{ $json.ats_score }}",
-            "Agent Screening Score": "={{ $json.hiring_score }}",
-            "Confidence Score": "={{ $('Code in JavaScript').item.json.confidence_score }}",
-            "Hiring Recomandation": "={{ $json.hiring_recommendation }}",
-            "Key Reason ": "={{ $json.key_reason }}",
-            "Resume/ Profile link": "=https:{{ $('Code in Data Extractor of Resume').item.json.resumeParsed.profiles.github }}, ",
-            "Experience": "={{ $('Code in Data Extractor of Resume').item.json.resumeParsed.experience_years }}",
-            "Education": "={{ $('Code in Data Extractor of Resume').item.json.resumeParsed.education.undergraduate }}, {{ $('Code in Data Extractor of Resume').item.json.resumeParsed.education.postgraduate }}",
-            "Skills": "={{ Object.values($('Code in Data Extractor of Resume').item.json.resumeParsed.technical_skills).flat().join(', ') }}"
-          },
-          "matchingColumns": [
-            "Sr No."
-          ],
-          "schema": [
-            {
-              "id": "Sr No.",
-              "displayName": "Sr No.",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "Candidate Name ",
-              "displayName": "Candidate Name ",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Role",
-              "displayName": "Role",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Resume ATS Score",
-              "displayName": "Resume ATS Score",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Agent Screening Score",
-              "displayName": "Agent Screening Score",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Confidence Score",
-              "displayName": "Confidence Score",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Hiring Recomandation",
-              "displayName": "Hiring Recomandation",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Key Reason ",
-              "displayName": "Key Reason ",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Resume/ Profile link",
-              "displayName": "Resume/ Profile link",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Experience",
-              "displayName": "Experience",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Education",
-              "displayName": "Education",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Skills",
-              "displayName": "Skills",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.7,
-      "position": [
-        3552,
-        -480
-      ],
-      "id": "ee789979-6438-4c77-a51c-811f8decdca2",
-      "name": "Append row in sheet",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "DXJonhlgSSxgJDxq",
-          "name": "Google Sheets account"
-        }
-      }
     },
     {
       "parameters": {
@@ -606,15 +380,15 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2.1,
       "position": [
-        1664,
-        -128
+        -1744,
+        1744
       ],
-      "id": "928859ad-1e8d-42a2-b789-a940d5aadf2d",
+      "id": "e8e0663d-5b74-41db-bc23-d8cdeccf05b6",
       "name": "Ops Profile Modal For extraction ",
       "credentials": {
         "openAiApi": {
-          "id": "W6bq6TIwr8dtcN2T",
-          "name": "OpenAi account 2"
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
         }
       }
     },
@@ -640,15 +414,15 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2.1,
       "position": [
-        1680,
-        320
+        -1728,
+        2192
       ],
-      "id": "7716419b-3302-4828-ba7b-714b87dc8446",
+      "id": "3eb9b520-8f66-4369-8852-dbff2f0845d9",
       "name": "Sales Profile Modal For extraction",
       "credentials": {
         "openAiApi": {
-          "id": "W6bq6TIwr8dtcN2T",
-          "name": "OpenAi account 2"
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
         }
       }
     },
@@ -659,10 +433,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2016,
-        -128
+        -1392,
+        1744
       ],
-      "id": "bb1f34ac-a1b8-486d-ba37-0ba1ff30e6e6",
+      "id": "34d55112-9200-40b5-b765-ae699f01bfb5",
       "name": "Code in Data Extractor of Resume Ops"
     },
     {
@@ -678,35 +452,35 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        2288,
-        96
+        -1120,
+        1968
       ],
-      "id": "63b49613-0876-4880-8fde-f064957a093c",
+      "id": "d8add384-db2e-4bfe-b14d-597ffc033608",
       "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
-          "id": "W6bq6TIwr8dtcN2T",
-          "name": "OpenAi account 2"
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
         }
       }
     },
     {
       "parameters": {
         "operation": "get",
-        "documentURL": "https://docs.google.com/document/d/1F7p2LCzzFkWnnygelLSt1X8Tghj7lSJ0zOwmgN1So8g/edit"
+        "documentURL": "https://docs.google.com/document/d/13iD8esFeDIUJ9QvZL3K9D47FhMDNFcRTrfHUEK_7BLk/edit"
       },
       "type": "n8n-nodes-base.googleDocsTool",
       "typeVersion": 2,
       "position": [
-        2448,
-        80
+        -960,
+        1952
       ],
-      "id": "f53046f8-2683-4231-84e7-2b7a737aa18a",
+      "id": "88dfdb2c-4955-4e25-bcfc-ddfd934efe86",
       "name": "Get a document in Google Docs",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "HawPhEVYdCmqc67r",
-          "name": "Google Docs account"
+          "id": "3RrGPc4ghLNaad8v",
+          "name": "The Batraanumerology Docs"
         }
       }
     },
@@ -721,10 +495,10 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        2288,
-        -128
+        -1120,
+        1744
       ],
-      "id": "8f40073b-9c2e-466b-a5ca-36746d8cf2a6",
+      "id": "73899a77-d97e-4718-8290-51460c3726e7",
       "name": "AI Agent For Ops"
     },
     {
@@ -734,10 +508,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2624,
-        -128
+        -784,
+        1744
       ],
-      "id": "3eb7c832-a184-4d8d-992a-c5bd3054df9f",
+      "id": "fb3d4f0a-33f0-4d60-a497-faaa3507bd08",
       "name": "Code for Github Data Exrtraction2"
     },
     {
@@ -754,7 +528,7 @@
           "__rl": true,
           "value": 579626118,
           "mode": "list",
-          "cachedResultName": "Operations",
+          "cachedResultName": "Operations AI Screening",
           "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit#gid=579626118"
         },
         "columns": {
@@ -767,11 +541,12 @@
             "Confidence Score": "={{ $('Code in JavaScript').item.json.confidence_score }}",
             "Hiring Recomandation": "={{ $json.hiring_recommendation }}",
             "Key Reason ": "={{ $json.key_reason }}",
-            "Resume/ Profile link": "=",
+            "Resume/ Profile link": "={{ $('Ops Form Trigger').item.json['Upload Resume (PDF format only)'] }}",
             "Experience": "={{ $json.experience_breakdown.total_years }}",
             "Education": "=UnderGraduation: {{ JSON.stringify($('Code in Data Extractor of Resume Ops').item.json.resumeParsed.education.undergraduate) }}\nPostGraduation: {{ JSON.stringify($('Code in Data Extractor of Resume Ops').item.json.resumeParsed.education.postgraduate) }}\n",
             "Skills": "={{ ($('Code in Data Extractor of Resume Ops').item.json.resumeParsed.skills.softSkills || []).join(', ') }}\n",
-            "Stability": "=Average Tenure: {{ $json.stability_metrics.average_tenure_years }},\nTotal Jobs: {{ $json.stability_metrics.total_jobs }}\n"
+            "Stability": "=Average Tenure: {{ $json.stability_metrics.average_tenure_years }},\nTotal Jobs: {{ $json.stability_metrics.total_jobs }}\n",
+            "Email ID": "={{ $('Ops Form Trigger').item.json['Email address'] }}"
           },
           "matchingColumns": [
             "Sr No."
@@ -780,6 +555,16 @@
             {
               "id": "Sr No.",
               "displayName": "Sr No.",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email ID",
+              "displayName": "Email ID",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -915,42 +700,42 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2880,
-        -128
+        -528,
+        1744
       ],
-      "id": "7371634c-5ab6-4502-b636-fee880e76b84",
+      "id": "728b88bd-d5cd-420c-9c3f-f76045d6abbb",
       "name": "Append row in sheet For Ops",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "DXJonhlgSSxgJDxq",
-          "name": "Google Sheets account"
+          "id": "9QBCsxB2qiIpxsde",
+          "name": "TheBatraaNumerology Google Sheets account"
         }
       }
     },
     {
       "parameters": {
         "operation": "get",
-        "documentURL": "https://docs.google.com/document/d/1F7p2LCzzFkWnnygelLSt1X8Tghj7lSJ0zOwmgN1So8g/edit"
+        "documentURL": "https://docs.google.com/document/d/1lif1NLOlFGsdfymMRdSi5d6QsigBz5nB6fF0D50OC1o/edit"
       },
       "type": "n8n-nodes-base.googleDocsTool",
       "typeVersion": 2,
       "position": [
-        2368,
-        528
+        -1040,
+        2400
       ],
-      "id": "924e36d4-132b-4c29-a285-32250760afcc",
+      "id": "f02dbda6-29b2-4998-891c-4f00863b25d7",
       "name": "Get a document in Google Docs1",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "HawPhEVYdCmqc67r",
-          "name": "Google Docs account"
+          "id": "3RrGPc4ghLNaad8v",
+          "name": "The Batraanumerology Docs"
         }
       }
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Resume Text: {{ $('Extract from File').item.json.text }}\nParsed Resume Data: {{ $json.resumeParsed }}\n",
+        "text": "=Resume Text: {{ $('Extract from File').item.json.text }}\nParsed Resume Data: {{ $json.resumeParsed }}\n\nCheck the JD in given doc first.",
         "options": {
           "systemMessage": "You are an Expert Resume Evaluation Agent for Customer Support & Operations roles that provides TWO independent scoring perspectives:\n\n1) ATS Score (0–100): Universal ATS compatibility and resume quality\n2) Hiring Score (0–100): Custom evaluation strictly based on the provided Job Requirements\n\nYour goal is to evaluate candidates objectively while PRIORITIZING RELEVANT EXPERIENCE, JOB STABILITY, and REQUIREMENT ALIGNMENT.\n\n════════════════════════════════════\nINPUTS YOU WILL RECEIVE\n════════════════════════════════════\n1. Resume Text (raw extracted text)\n2. Parsed Resume Data (JSON: skills, experience, education)\n3. Job Requirements Document (supreme authority)\n\n════════════════════════════════════\nPART 1: ATS SCORE (0–100)\n════════════════════════════════════\nApply UNIVERSAL ATS standards only:\n- Clean formatting & parsability\n- Clear section headings\n- Keyword structure (not job-specific)\n- Consistent timeline\n- No graphics or tables blocking parsing\n- Contact information clarity\n\n❗ DO NOT consider job requirements here.\n\n════════════════════════════════════\nPART 2: HIRING SCORE (0–100)\n════════════════════════════════════\nEvaluate ONLY against the Job Requirements document.\n\nGLOBAL RULE:\nEXPERIENCE RELEVANCE and JOB STABILITY are the PRIMARY factors for operations/support roles. Skills and tools are SECONDARY validators.\n\n────────────────────────────────────\n1) RELEVANT EXPERIENCE (40 pts)\n────────────────────────────────────\n\nA. Role-Specific Experience (25 pts)\n- Extract required experience type from JD (customer support, operations, etc.)\n- Direct experience in EXACT role → 25 pts\n- Direct experience in SIMILAR role (e.g., customer service for support) → 20 pts\n- Related experience (e.g., sales for support role) → 10 pts\n- Unrelated experience → 0 pts\n\nCalculation:\n- If JD requires \"2 years customer support\":\n  * 2+ years in customer support → 25 pts\n  * 2+ years in customer service/help desk → 20 pts\n  * 2+ years in sales/operations → 10 pts\n  * Less than required years → proportional reduction\n\nB. Total Experience (10 pts)\n- Meets or exceeds total experience requirement → 10 pts\n- 1 year below → 7 pts\n- 2 years below → 4 pts\n- 3+ years below → 0 pts\n\nC. Industry/Domain Match (5 pts)\n- Same industry as JD → 5 pts\n- Related industry → 3 pts\n- Different industry → 0 pts\n\n────────────────────────────────────\n2) JOB STABILITY (20 pts)\n────────────────────────────────────\n\nCalculate average tenure per job:\n- Average tenure ≥ 2 years → 20 pts\n- Average tenure 1.5–2 years → 15 pts\n- Average tenure 1–1.5 years → 10 pts\n- Average tenure 6 months–1 year → 5 pts\n- Average tenure < 6 months → 0 pts\n\nTenure Bonus:\n- If candidate has 3+ years at one company → +5 bonus pts (max 25 total)\n\nRed Flags (deductions):\n- 3+ job changes in last 2 years → -10 pts\n- Employment gaps > 6 months (unexplained) → -5 pts per gap\n\n────────────────────────────────────\n3) MUST-HAVE REQUIREMENTS (15 pts)\n────────────────────────────────────\n\nA. Core Competencies (10 pts)\nExtract required competencies from JD:\n- Customer handling/communication → 3 pts\n- Problem-solving/troubleshooting → 3 pts\n- Process adherence/documentation → 2 pts\n- Multitasking/time management → 2 pts\n\nAward based on evidence in resume (achievements, responsibilities, metrics)\n\nB. Education (5 pts)\n- Meets requirement → 5 pts\n- Related degree → 3 pts\n- Compensating experience (5+ years) → up to 5 pts\n- Below requirement → 0 pts\n\n────────────────────────────────────\n4) TOOLS & TECHNICAL SKILLS (15 pts)\n────────────────────────────────────\n\nA. Required Tools/Systems (10 pts)\n- CRM tools (Salesforce, Zendesk, Freshdesk, etc.) → 4 pts\n- Ticketing systems → 3 pts\n- Communication platforms (Zoom, Teams, Slack) → 2 pts\n- Other required tools → 1 pt\n\nAward proportionally based on number of required tools candidate has used.\n\nB. Nice-to-Have Tools (5 pts)\n- Preferred/additional tools from JD → award proportionally\n- Advanced tool proficiency (certifications, power user) → bonus points\n\nRule:\nTool experience validates capability but does NOT replace relevant work experience.\n\n────────────────────────────────────\n5) PERFORMANCE INDICATORS (10 pts)\n────────────────────────────────────\n\nA. Quantifiable Achievements (7 pts)\n- Customer satisfaction scores/CSAT improvements → 3 pts\n- Ticket resolution metrics/SLA achievements → 2 pts\n- Process improvements/efficiency gains → 2 pts\n\nB. Awards & Recognition (3 pts)\n- Employee of the month/quarter → 2 pts\n- Customer service awards → 3 pts\n- Performance-based promotions → 2 pts\n\n────────────────────────────────────\n6) SOFT SKILLS & CULTURAL FIT (bonus: up to 5 pts)\n────────────────────────────────────\n- Language proficiency (if required) → 2 pts\n- Team collaboration evidence → 2 pts\n- Learning & adaptability indicators → 1 pt\n\n════════════════════════════════════\nHIRING DECISION RULES\n════════════════════════════════════\n91–100 → MUST_INTERVIEW\n70–90  → RECOMMEND_INTERVIEW\n55–69  → CONDITIONAL_INTERVIEW\n40–54  → HOLD\n<40    → REJECT\n\n❗ SAFETY RULES:\n1. If relevant experience requirement is met AND job stability is strong (avg tenure ≥ 1.5 years), Hiring Score MUST NOT be below 60.\n2. Frequent job hopping (avg tenure < 1 year) caps maximum score at 70, regardless of other factors.\n3. Missing required tools reduces score but does NOT disqualify if experience is strong.\n\n════════════════════════════════════\nOUTPUT FORMAT (STRICT JSON ONLY)\n════════════════════════════════════\n{\n  \"ats_score\": 0,\n  \"hiring_score\": 0,\n  \"hiring_recommendation\": \"MUST_INTERVIEW|RECOMMEND_INTERVIEW|CONDITIONAL|HOLD|REJECT\",\n  \"key_reason\": \"Max 30 words explaining the decision\",\n  \"stability_metrics\": {\n    \"average_tenure_years\": 0,\n    \"total_jobs\": 0,\n    \"longest_tenure_years\": 0,\n    \"stability_flag\": \"STABLE|MODERATE|UNSTABLE\"\n  },\n  \"experience_breakdown\": {\n    \"total_years\": 0,\n    \"relevant_role_years\": 0,\n    },\n  \"tools_identified\": [],\n}\n\nRules:\n- Evidence-based scoring only\n- Requirements document is supreme authority\n- Prioritize EXPERIENCE and STABILITY over tools\n- Do NOT add explanations outside JSON\n- Calculate stability metrics from work history timeline\n"
         }
@@ -958,10 +743,10 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        2208,
-        320
+        -1200,
+        2192
       ],
-      "id": "c21490c3-db45-4575-ae2d-6e21521f046a",
+      "id": "aa5892ea-0793-43b8-870b-edbcc0d194da",
       "name": "AI Agent For Sales"
     },
     {
@@ -971,10 +756,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2000,
-        320
+        -1408,
+        2192
       ],
-      "id": "e47f6d9d-3f21-4c37-a6ff-5dbfad6ef195",
+      "id": "5b9a5ce0-2474-4639-8888-4eba2cbfb58d",
       "name": "Code in Data Extractor of Resume Sales"
     },
     {
@@ -990,15 +775,15 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        2208,
-        544
+        -1200,
+        2416
       ],
-      "id": "2a94ff0c-fd37-498f-b242-48a1da019ea7",
+      "id": "6a411145-cf57-4179-9005-04ced16ebdae",
       "name": "OpenAI Chat Model Sales",
       "credentials": {
         "openAiApi": {
-          "id": "W6bq6TIwr8dtcN2T",
-          "name": "OpenAi account 2"
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
         }
       }
     },
@@ -1009,10 +794,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2544,
-        320
+        -864,
+        2192
       ],
-      "id": "560b3f43-c10d-4e51-9f0b-a49b320e4ed3",
+      "id": "37061d33-3484-42ef-b721-027a4e68be1a",
       "name": "Code for Sales Data Exrtraction"
     },
     {
@@ -1190,43 +975,307 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2752,
-        320
+        -656,
+        2192
       ],
-      "id": "8272c8cc-8e3e-4bb1-be54-a7a27ee31059",
+      "id": "f6d9ebf5-d290-45a9-acc1-95cbaf579d40",
       "name": "Append row in sheet For Sales",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "DXJonhlgSSxgJDxq",
-          "name": "Google Sheets account"
+          "id": "9QBCsxB2qiIpxsde",
+          "name": "TheBatraaNumerology Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0",
+          "mode": "list",
+          "cachedResultName": "Hiring Agent Screening",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Candidate Name ": "={{ $('Code in Data Extractor of Resume').item.json.resumeParsed.name }}",
+            "Role": "={{ $('Code in JavaScript').item.json.detected_role }}",
+            "Resume ATS Score": "={{ $json.ats_score }}",
+            "Agent Screening Score": "={{ $json.hiring_score }}",
+            "Confidence Score": "={{ $('Code in JavaScript').item.json.confidence_score }}",
+            "Hiring Recomandation": "={{ $json.hiring_recommendation }}",
+            "Key Reason ": "={{ $json.key_reason }}",
+            "Resume/ Profile link": "=https:{{ $('Code in Data Extractor of Resume').item.json.resumeParsed.profiles.github }}, ",
+            "Experience": "={{ $('Code in Data Extractor of Resume').item.json.resumeParsed.experience_years }}",
+            "Education": "={{ $('Code in Data Extractor of Resume').item.json.resumeParsed.education.undergraduate }}, {{ $('Code in Data Extractor of Resume').item.json.resumeParsed.education.postgraduate }}",
+            "Skills": "={{ Object.values($('Code in Data Extractor of Resume').item.json.resumeParsed.technical_skills).flat().join(', ') }}"
+          },
+          "matchingColumns": [
+            "Sr No."
+          ],
+          "schema": [
+            {
+              "id": "Sr No.",
+              "displayName": "Sr No.",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Candidate Name ",
+              "displayName": "Candidate Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resume ATS Score",
+              "displayName": "Resume ATS Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Agent Screening Score",
+              "displayName": "Agent Screening Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Confidence Score",
+              "displayName": "Confidence Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hiring Recomandation",
+              "displayName": "Hiring Recomandation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Key Reason ",
+              "displayName": "Key Reason ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resume/ Profile link",
+              "displayName": "Resume/ Profile link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Education",
+              "displayName": "Education",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Skills",
+              "displayName": "Skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        144,
+        1392
+      ],
+      "id": "8bf1c507-c557-461e-bb6b-534c9e0fd248",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9QBCsxB2qiIpxsde",
+          "name": "TheBatraaNumerology Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.resumeId }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -3392,
+        2192
+      ],
+      "id": "694d606e-02d7-4658-b237-05ee603ec805",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "l8XpxB9z4DZIIZ0V",
+          "name": "Thebatraanumerology Mail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let resumeLink = $input.first().json['Upload Resume (PDF format only)']\nlet resumeId = resumeLink.split('=')[1];\n\nreturn [\n  {\n    json: {\n      resumeId: resumeId\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3664,
+        2192
+      ],
+      "id": "a0b424e8-aba1-4e9a-b730-b91f06768109",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0",
+          "mode": "list",
+          "cachedResultName": "Hiring Form Responses and Agent  Screening",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1966705018,
+          "mode": "list",
+          "cachedResultName": "Operations Form Responses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit#gid=1966705018"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3888,
+        2304
+      ],
+      "id": "0897407a-2349-44e3-beb2-8b8c8dbcee93",
+      "name": "Ops Form Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "nkyzeC5J4Id9WuP9",
+          "name": "TheBatraaNumerology Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0",
+          "mode": "list",
+          "cachedResultName": "Hiring Form Responses and Agent  Screening",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 316250029,
+          "mode": "list",
+          "cachedResultName": "RM Form Responses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1b79NefrqJx7-ha9zKME9X8D_c5rhsIQYEVwZ4LdEiz0/edit#gid=316250029"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3888,
+        2080
+      ],
+      "id": "1df1d1be-f637-44cc-bba3-25156ca0ac81",
+      "name": "Sales Form Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "nkyzeC5J4Id9WuP9",
+          "name": "TheBatraaNumerology Google Sheets Trigger account"
         }
       }
     }
   ],
   "pinData": {},
   "connections": {
-    "Google Drive Trigger": {
-      "main": [
-        [
-          {
-            "node": "Download file",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Download file": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Extract from File": {
       "main": [
         [
@@ -1366,7 +1415,7 @@
       "main": [
         [
           {
-            "node": "Append row in sheet",
+            "node": "Append row in sheet1",
             "type": "main",
             "index": 0
           }
@@ -1504,17 +1553,63 @@
           }
         ]
       ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ops Form Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sales Form Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
-  "versionId": "c1723dc9-d200-4963-87be-9df43bebd362",
+  "versionId": "01d72d3c-0651-4976-96c7-27ed048bd965",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "a3e41181cca81db1c4371f67b1048b0d1668ded5c31a22cb402b2b62d8df5f7f"
+    "instanceId": "9fbe8f1e854a8e9e809037417b5a57fda11bd08c2ca2c1f51a7ebaef728745b9"
   },
-  "id": "KIY0rPpnQfAT45rt",
+  "id": "9p59NrDnX7kDxUPk",
   "tags": []
 }
