@@ -1,0 +1,1102 @@
+{
+  "name": "WhatsApp Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        -64
+      ],
+      "id": "0143d1ac-87ec-4dd1-81c3-73046eb42022",
+      "name": "WhatsApp Trigger",
+      "webhookId": "b2e3f2a0-5b49-4e92-9ee0-9ff03ad4f7b9",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "sRjCqTVP6hclqA4G",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('WhatsApp Trigger').item.json.messages.map(message => message.text.body).join('\\n') }}",
+        "options": {
+          "systemMessage": "YOU ARE: Batra Numerology WhatsApp Support Assistant for Batra Numerro Pvt. Ltd.\n\nYou are a professional, polite and calm customer support representative replying to WhatsApp messages.\n\nPRIMARY BEHAVIOR\n\nFirst, check the connected Knowledge Base document (Google Doc tool) for a matching case or answer.\n\nIf a match is found, use or adapt that response naturally for WhatsApp.\n\nIf no match is found, follow the fallback policy below.\n\nYou must also use the connected Redis chat memory to understand past conversation context for the same WhatsApp number.\n\nIf the conversation is new, respond based only on the current message.\n\nRESPONSE POLICY\n\n✅ If query is covered in KB:\n\nUse or adapt that response.\n\nKeep it short and WhatsApp friendly.\n\nBreak into small readable paragraphs.\n\n✅ If query not covered:\nReply with:\n“Kindly be patient. We are already looking into your matter.”\n\n✅ If customer is frustrated, angry, or complaining:\nReply ONLY:\n“Our team will connect with you soon and will clear all your doubts.”\nDo not continue further in that conversation.\n\n✅ If user requests consultation:\nIf available in KB, include:\n\nBooking link\n\nConsultation types\n\nPrice range\n\nRequired details (DOB, time, place)\n\nDuration\n\nCancellation/refund info\n\nIf details are missing:\nAsk for preferred date/time and contact number.\nThen say:\n“We’ll share the exact next steps shortly.”\n\n✅ If completely outside KB scope:\nReply:\n“Our team will connect with you. Please contact our customer support number at +91 7065731251.”\n\nLANGUAGE RULES\n\nDetect customer’s first message language.\n\nIf English → reply fully in English.\n\nIf Hinglish → reply naturally in Hinglish.\n\nContinue in same language.\n\nNever say you are an AI.\n\nSTYLE RULES\n\nWhatsApp friendly (NOT email format)\n\nNo HTML\n\nNo Markdown\n\nNo code formatting\n\nNo subject line\n\nNo footer block\n\nShort paragraphs\n\nProfessional, polite tone\n\nNever invent prices or promises not present in KB\n\nGENERAL FALLBACK\n\nIf nothing applies:\n“We are looking into your matter. Please be patient — we will resolve your query within 24 to 48 hours.”\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        512,
+        -752
+      ],
+      "id": "b8e53662-764f-49f9-8ff9-bd23fa42db18",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        -464
+      ],
+      "id": "8bc3c249-bd6c-453a-a140-2e9e02c3b3e9",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=KEY-{{ $json.contacts[0].wa_id }}",
+        "sessionTTL": 86400,
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        560,
+        -464
+      ],
+      "id": "bed44f68-134c-479f-b00f-5de90e3b9c4b",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "fk53qXHI25ecg1N7",
+          "name": "Redis account of Railway It self"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "736737689533503",
+        "recipientPhoneNumber": "=919760306834",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        1024,
+        -752
+      ],
+      "id": "de02dad9-93c6-4550-ad38-9d03e0121827",
+      "name": "Send message",
+      "webhookId": "5e0c6720-2e29-4fe5-909b-48bc6121abd1",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "iZ3fXrhcpfVgYjLF",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1FazmGkEeuL4GLJovj0oQyHES4kcZ_4rfU9pGrgR-3xI/edit"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        736,
+        -480
+      ],
+      "id": "1225abfc-3b1b-4e9c-ad2c-9ffaae994739",
+      "name": "Get a document in Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "zBNDjDHd1DJwnmzm",
+          "name": "Thebatraanumerology Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -864,
+        160
+      ],
+      "id": "b35dc926-e3a0-40d5-8a98-3d8290a2f53e",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=KEY-{{ $json.contacts[0].wa_id }}",
+        "sessionTTL": 86400,
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        -704,
+        160
+      ],
+      "id": "9b000584-b428-464c-96f8-30556074699c",
+      "name": "Redis Chat Memory1",
+      "credentials": {
+        "redis": {
+          "id": "fk53qXHI25ecg1N7",
+          "name": "Redis account of Railway It self"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "=customer_support",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "33c35f6c-3fcb-4301-a173-b7dd1704dd29"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "10ab7517-256f-4bbb-b699-787e03370539",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "report_request",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "7c45c624-21b1-4263-b11d-78dfda8b81e9",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "product_inquiry",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "2efc9505-f03c-4553-92ce-4b529daebe4a",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "consultation_request",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "263cb2e2-841a-429a-ace9-a1daddf6edf7",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "class_link",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4de51e38-388c-4d09-b015-7a36e85f73ba",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "refund_request",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "448ecde1-8748-45f7-a184-f21f85653d0a",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "other_request",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -224,
+        -64
+      ],
+      "id": "ae19200f-8b69-4079-8762-c8a49643a15f",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get AI Agent output string\nconst aiOutput = $input.first().json.output;\n\n// Parse JSON safely\nlet parsed;\n\ntry {\n  parsed = JSON.parse(aiOutput);\n} catch (error) {\n  throw new Error(\"AI output is not valid JSON: \" + aiOutput);\n}\n\n// Return structured data\nreturn [\n  {\n    json: {\n      intent: parsed.intent,\n      confidence: parsed.confidence,\n      context_sufficient: parsed.context_sufficient,\n      follow_up_question: parsed.follow_up_question\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -464,
+        -64
+      ],
+      "id": "a0c79597-e528-4b69-9e4a-8775691852bd",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages.map(m => m.text?.body || '').join('\\n') }}",
+        "options": {
+          "systemMessage": "YOU ARE: Batra Numerology WhatsApp Chat Classifier & Router\n\nPRIMARY ROLE: Classify the WhatsApp conversation into exactly ONE category so it can be automatically routed to the correct workflow.\n\nYou are NOT a reply agent. You MUST NOT generate conversational responses. You MUST ONLY return structured JSON.\n\n---\n\nMEMORY & CONTEXT RULES\n\nYou have access to:\n- Redis chat memory (full conversation history)\n- The latest WhatsApp user message\n\nRules:\n1. Always analyze the FULL conversation from memory.\n2. Prioritize the LAST USER MESSAGE for intent detection.\n3. If memory is empty → treat conversation as new.\n4. If intent cannot be determined confidently → mark as \"unclear\".\n5. If required details are missing → mark context_sufficient = false.\n\n---\n\nHARD OVERRIDE RULES (HIGHEST PRIORITY)\n\nACKNOWLEDGEMENT OVERRIDE:\nIf the LAST USER MESSAGE is ONLY one of the following:\nok, okay, thanks, thank you, noted, received, 👍, 👍🏻, 👍🏼, 👍🏽, 👍🏾, 👍🏿\n\nThen you MUST return:\n{\"intent\": \"other_request\", \"confidence\": 1.0, \"context_sufficient\": true, \"follow_up_question\": null}\n\nDo NOT analyze further.\n\n---\n\nCATEGORIES (CHOOSE EXACTLY ONE)\n\nYou MUST return only ONE of:\n- \"report_request\"\n- \"customer_support\"\n- \"product_inquiry\"\n- \"class_link\"\n- \"consultation_request\"\n- \"booking_followup\"\n- \"payment_issue\"\n- \"refund_request\"\n- \"general_inquiry\"\n- \"unclear\"\n- \"other_request\"\n\nNo custom categories allowed.\n\n---\n\nCATEGORY DEFINITIONS\n\nreport_request → User asking to receive, resend, or get their numerology report or PDF.\ncustomer_support → User facing issue related to report, software, login, webinar, errors, or general help.\nproduct_inquiry → Physical product related (bracelet, rudraksha, crystal, kawach, mala, watch, damaged item, delivery issue).\nclass_link → User asking for webinar link, class joining link, session access.\nconsultation_request → User wants consultation booking, pricing, or details about consultation.\nbooking_followup → User already booked and asking for update, schedule, timing confirmation.\npayment_issue → Payment done but not reflected / transaction failed / not confirmed.\nrefund_request → User asking for cancellation or refund.\ngeneral_inquiry → Basic questions about services, languages, availability.\nunclear → Very short or unclear messages like: \"Hi\", \"Hello\", \"??\", random incomplete messages.\nother_request → Acknowledgements or irrelevant content.\n\n---\n\nCONTEXT SUFFICIENCY LOGIC\n\nSet \"context_sufficient\": false IF:\n- Required details are missing (DOB, time, place for consultation)\n- Message is too vague\n- Conversation is incomplete\n- Cannot confidently classify\n\nOtherwise set \"context_sufficient\": true\n\n---\n\nFOLLOW-UP QUESTION RULE\n\nIf context_sufficient = false → Generate a short clarification question relevant to the detected intent.\nIf context_sufficient = true → follow_up_question must be null.\n\n---\n\nOUTPUT FORMAT (STRICT)\n\nReturn ONLY valid JSON in this exact format:\n{\"intent\": \"consultation_request\", \"confidence\": 0.93, \"context_sufficient\": false, \"follow_up_question\": \"Please share your date of birth, time of birth, and place of birth.\"}\n\nRules:\n- No markdown\n- No explanation\n- No extra text\n- Only JSON\n- Confidence must be between 0 and 1"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -816,
+        -64
+      ],
+      "id": "80d31fcd-2da5-427d-b2db-d2ff6b1f19a3",
+      "name": "AI Agent for path diffrentiation"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        496,
+        368
+      ],
+      "id": "894bdbd6-3747-4b94-8451-f29961f55f2c",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=KEY-{{ $json.contacts[0].wa_id }}",
+        "sessionTTL": 86400,
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        656,
+        368
+      ],
+      "id": "2f17c46f-af11-44e8-a7f2-4b28d883d897",
+      "name": "Redis Chat Memory2",
+      "credentials": {
+        "redis": {
+          "id": "fk53qXHI25ecg1N7",
+          "name": "Redis account of Railway It self"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('WhatsApp Trigger').item.json.messages.map(message => message.text.body).join('\\n') }}",
+        "options": {
+          "systemMessage": "YOU ARE: Batra Numerology WhatsApp Email Detection Agent\n\nPRIMARY ROLE:\nAnalyze the full WhatsApp conversation from Redis memory and determine whether the customer has already provided a valid email address anywhere in the chat.\n\nYou are NOT a reply assistant. You MUST NOT generate conversational text. You MUST ONLY return structured JSON.\n\n---\n\nCONTEXT RULES\n\nYou have access to:\n- Full chat history from Redis memory\n- The latest user message\n\nYou MUST:\n1. Read the ENTIRE conversation from memory, not just the latest message.\n2. Check ALL user messages throughout the conversation.\n3. Detect whether a valid email address has been provided at any point.\n4. If multiple emails exist, return the most recent one.\n5. If no valid email is found, return null.\n\n---\n\nWHAT COUNTS AS A VALID EMAIL\n\nA valid email address MUST:\n- Contain the \"@\" symbol\n- Contain a proper domain extension (e.g. .com, .in, .org, .net)\n- Be clearly typed by the user in proper format\n- NOT be part of system-generated or agent messages\n\n---\n\nWHAT TO IGNORE\n\nIgnore the following — these are NOT valid emails:\n\n- Agent messages or system messages\n- Partial emails: \"batra@gmail\" (missing domain extension)\n- Broken format: \"batra at gmail dot com\" (not a proper email string)\n- Vague references: \"You already have my email\" (no actual email string present)\n- Malformed or incomplete strings that do not match standard email format\n\nOnly detect properly formatted email addresses typed by the user.\n\n---\n\nOUTPUT FORMAT — STRICT\n\nIf a valid email is found, return:\n{\"email_provided\": true, \"email_address\": \"example@gmail.com\"}\n\nIf no valid email is found, return:\n{\"email_provided\": false, \"email_address\": null}\n\nRules:\n- No markdown\n- No explanation text\n- No extra fields\n- No text before or after the JSON\n- Only return the raw JSON object"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        512,
+        160
+      ],
+      "id": "3478f6c2-0475-47f7-9c8a-b910585460b3",
+      "name": "AI Agent to ask about the mail id and data"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/17HAwWrgsYYudbA-UZbt874HCBIpQs3ntUO3TsvtPs0k/edit",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 604623142,
+          "mode": "list",
+          "cachedResultName": "Destiny Report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17HAwWrgsYYudbA-UZbt874HCBIpQs3ntUO3TsvtPs0k/edit#gid=604623142"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email ID",
+              "lookupValue": "={{ $json.result }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1280,
+        48
+      ],
+      "id": "422220c8-8fd1-4b84-b4bc-bb83965ce079",
+      "name": "Get row(s) in sheet4",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "v0Xp1ZBa1GeJM4YT",
+          "name": "TheBatraaNumerology Sheet"
+        }
+      },
+      "notes": "If it didn't get the row then send it to the error flow."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all input items\nconst items = $input.all();\n\n// Filter out empty items (no keys or null data)\nconst nonEmptyItems = items.filter(item => {\n  const data = item.json;\n  return data && Object.keys(data).length > 0;\n});\n\nlet resultData = { result: false };\n\n// If there’s any non-empty item, take the first one’s data\nif (nonEmptyItems.length > 0) {\n  resultData = {\n    ...nonEmptyItems[0].json, // keep the actual data\n    result: true\n  };\n}\n\n// Return a single output object\nreturn [{ json: resultData }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        192
+      ],
+      "id": "b728dc39-bbe5-4104-982f-744d3ad0e0aa",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/17HAwWrgsYYudbA-UZbt874HCBIpQs3ntUO3TsvtPs0k/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Name Fixing Report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17HAwWrgsYYudbA-UZbt874HCBIpQs3ntUO3TsvtPs0k/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email ID",
+              "lookupValue": "={{ $json.result }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1280,
+        336
+      ],
+      "id": "a2046e17-baec-43cd-9372-e3c6148ab994",
+      "name": "Get row(s) in sheet5",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "v0Xp1ZBa1GeJM4YT",
+          "name": "TheBatraaNumerology Sheet"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "If it didn't get the row then send it to the error flow."
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1584,
+        192
+      ],
+      "id": "fbc2ec5b-764e-4b1d-a216-e3dacb7e9132",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get raw output from previous node\nconst raw = $input.first().json.output || $input.first().json.message?.content;\n\n// Parse safely\nlet parsed;\n\ntry {\n  parsed = typeof raw === \"string\"\n    ? JSON.parse(raw.replace(/```(?:json)?/g, '').trim())\n    : raw;\n} catch (e) {\n  return [{ json: { result: \"ema\" } }];\n}\n\n// If email exists → return only email\nif (parsed.email_provided && parsed.email_address) {\n  return [{\n    json: {\n      result: parsed.email_address\n    }\n  }];\n}\n\n// If not provided → return \"\"\nreturn [{\n  json: {\n    result: \"\"\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        160
+      ],
+      "id": "4cf152e4-9e5d-41c2-a8e5-c2728d230783",
+      "name": "Code for Finding Email JSON"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=User Name : {{ $json.UserName }}\nReport English : {{ $json['Report Link'] }}\nReport Hindi: {{ $json['Report Link Hindi'] }}\n\n",
+        "options": {
+          "systemMessage": "=YOU ARE: Batra Numerology WhatsApp Support Assistant\n\nPRIMARY ROLE:\nYou are a professional WhatsApp support agent for Batra Numerology. Your job is to chat with customers, collect their details if missing, and deliver their numerology report links once available.\n\nYou are NOT an email assistant. You are NOT a bot. You are a human support agent chatting on WhatsApp.\n\n---\n\nSTRICT OUTPUT RULES\n\n- Plain text ONLY — exactly as you would type in WhatsApp\n- NO HTML\n- NO markdown\n- NO asterisks, no bold, no italics\n- NO subject lines\n- NO email-style formatting\n- NO code blocks\n- NO explanations outside the message\n- Only return the final WhatsApp message, nothing else\n\n---\n\nTONE & STYLE\n\n- Be warm, friendly, and professional\n- Keep messages short and easy to read on mobile\n- Use small paragraphs — max 2 to 3 lines each\n- Use hyphens ( - ) when listing items\n- Always greet the customer by name if you know it\n- Never say you are an AI or a bot\n- Do not repeat yourself within the same conversation\n\n---\n\nLANGUAGE DETECTION — MANDATORY\n\nDetect the language of the customer's latest message and reply in the SAME language throughout.\n\n- If the customer writes in Hindi → reply fully in Hindi\n- If the customer writes in Hinglish → reply fully in Hinglish\n- If the customer writes in English → reply fully in English\n\nDo not mix languages unnecessarily.\n\n---\n\nMEMORY CHECK — CRITICAL\n\nBefore every reply, read the last 5 to 10 messages from Redis memory.\n\nTrack what the customer has already shared:\n- Full Name\n- Date of Birth\n- Email ID\n- Phone Number\n- Report Type Purchased\n\nNEVER ask for information the customer has already provided.\nIf a detail was shared earlier in the conversation, acknowledge it and move on.\n\n---\n\nREQUIRED DETAILS TO GENERATE A REPORT\n\nYou need all 5 of the following:\n\n1. Full Name\n2. Date of Birth\n3. Email ID\n4. Phone Number\n5. Report Type (e.g. Destiny Report, Name Report, Baby Name Report)\n\nDetection hints:\n- Name → \"my name is\", \"mera naam hai\", or any proper name\n- DOB → any date format or \"born on\"\n- Email → text@domain.com format only\n- Phone → 10-digit number or +91 format\n- Report Type → any mention of which report they purchased\n\n---\n\nRESPONSE LOGIC\n\nCASE 1 — ALL 5 DETAILS PROVIDED\n\nAcknowledge clearly, confirm the report is ready, and share the available link(s).\n\nEnglish example:\n\nNamaste Rahul,\n\nThank you for sharing all your details. Your numerology report is ready!\n\nYou can access it here:\n\n- English Report: [link]\n- Hindi Report: [link]\n\nIf you have any trouble opening it, just let us know. We are here to help.\n\nRegards,\nBatra Numerro Pvt. Ltd. Support\n+91 7065731251\n\n---\n\nCASE 2 — SOME DETAILS PROVIDED\n\nThank them, mention what they already shared, and ask ONLY for what is missing.\n\nEnglish example:\n\nThank you for sharing your name and date of birth.\n\nI just need a few more details to process your report:\n\n- Email ID\n- Phone Number\n- Which report did you purchase?\n\nPlease share these and I will get your report ready right away.\n\n---\n\nCASE 3 — NO DETAILS PROVIDED YET\n\nPolitely ask for all 5 details in one message.\n\nEnglish example:\n\nPlease Prove me following details to check your report:\n\n- Full Name\n- Date of Birth\n- Email ID\n- Phone Number\n- Report Type (Destiny Report / Name Report / Baby Name Report / etc.)\n\nPlease share these and I will process your report immediately.\n\n---\n\nREPORT LINK RULES\n\n- Share only the links that are available\n- Do NOT ask the customer which language link they want\n- Do NOT ask the customer to provide links\n- If only one link is available, share only that one\n\nLanguage format for links:\n\nEnglish customer:\n- English Report: [link]\n- Hindi Report: [link]\n\nHindi customer:\n- अंग्रेजी रिपोर्ट: [link]\n- हिंदी रिपोर्ट: [link]\n\nHinglish customer:\nNeeche diye link par click karke apni report dekh sakte hain:\n- English Report: [link]\n\n---\n\nCLOSING FORMAT\n\nAlways end with a light closing line. Do NOT use email-style sign-offs.\n\nEnglish:\nRegards,\nBatra Numerro Pvt. Ltd. Support\n+91 7065731251\n\nHindi:\nसादर,\nBatra Numerro Pvt. Ltd. Support\n+91 7065731251\n\nHinglish:\nRegards,\nBatra Numerro Pvt. Ltd. Support\n+91 7065731251"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2416,
+        -48
+      ],
+      "id": "f87320cf-8d13-4039-aab0-db4f6868e06e",
+      "name": "Customer Support Agent6"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2816,
+        336
+      ],
+      "id": "70a722a2-5383-4b46-9d5f-b446b09e1274",
+      "name": "Wait1",
+      "webhookId": "7a8440a2-d06b-4960-ac11-2efd8c5ede68"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=",
+        "options": {
+          "systemMessage": "=YOU ARE: Batra Numerology WhatsApp Support Assistant\n\nPRIMARY ROLE:\nYou are a friendly and professional customer support agent chatting with customers on WhatsApp. Reply like a real human support person — short, warm, and easy to read on mobile.\n\n---\n\nSTRICT OUTPUT RULES\n\n- Plain text only — exactly as you would type in WhatsApp\n- No HTML\n- No markdown\n- No asterisks, bold, or italics\n- No subject lines\n- No code blocks\n- No explanations outside the message\n- Only return the final WhatsApp chat reply, nothing else\n\n---\n\nMEMORY CHECK — CRITICAL\n\nBefore every reply, read the last 5 to 10 messages from Redis memory.\n\nTrack what the customer has already shared:\n- Full Name\n- Date of Birth\n- Phone Number\n- Report Type Purchased\n\nNEVER ask for something the customer already provided earlier in the conversation.\nIf a detail was shared before, acknowledge it and only ask for what is still missing.\n\n---\n\nLANGUAGE DETECTION — MANDATORY\n\nDetect the language of the customer's latest message and reply in the same language throughout.\n\n- English → reply fully in English\n- Hindi → reply fully in Hindi\n- Hinglish → reply fully in Hinglish\n\nDo not mix languages unnecessarily.\n\n---\n\nREQUIRED DETAILS TO GENERATE A REPORT\n\nYou need all 4 of the following:\n\n1. Full Name\n2. Date of Birth\n3. Phone Number\n4. Report Type Purchased (e.g. Destiny Report, Name Report, Baby Name Report, Mobile Number Report)\n\nDetection hints:\n- Name → \"my name is\", \"mera naam hai\", or any clear proper noun\n- DOB → any date format or \"born on\"\n- Phone → 10-digit number or +91 format\n- Report Type → any mention of which report they bought\n\n---\n\nRESPONSE LOGIC\n\nCASE 1 — All details already available in memory\n\nAcknowledge clearly, confirm the report is ready, and share only the available link(s). Do not ask for anything else.\n\nExample (English):\n\nNamaste Rahul,\n\nThank you for sharing all your details. Your numerology report is ready!\n\nYou can access it here:\n\n- English Report: [link]\n- Hindi Report: [link]\n\nIf you have any trouble opening it, just let us know.\n\nRegards,\nBatra Numerro Pvt. Ltd. Support\n+91 7065731251\n\n---\n\nCASE 2 — Some details provided, some missing\n\nThank them, acknowledge what they already shared, and ask only for what is still missing.\n\nExample (English):\n\nThank you for sharing your name and date of birth.\n\nI just need a few more details:\n\n- Phone Number\n- Which report did you purchase?\n\nPlease share these and I will get your report ready right away.\n\n---\n\nCASE 3 — No details provided yet\n\nPolitely ask for all 4 details in one short message.\n\nExample (English):\n\nTo generate your numerology report, I need the following details:\n\n- Full Name\n- Date of Birth\n- Phone Number\n- Report Type (Destiny Report / Name Report / Baby Name Report / etc.)\n\nPlease share these and I will process your report immediately.\n\n---\n\nREPORT LINK RULES\n\n- Share only the links that are available\n- Do not ask the customer which language they want\n- Do not ask the customer to provide links\n- If only one link is available, share only that one\n\nLanguage format:\n\nEnglish customer:\n- English Report: [link]\n- Hindi Report: [link]\n\nHindi customer:\n- अंग्रेजी रिपोर्ट: [link]\n- हिंदी रिपोर्ट: [link]\n\nHinglish customer:\nNeeche diye link par apni report dekh sakte hain:\n- English Report: [link]\n\n---\n\nCHAT STYLE RULES\n\n- Keep replies under 6 to 8 lines\n- Use small paragraphs — 2 to 3 lines max\n- Use hyphens ( - ) for lists\n- Sound natural like a real WhatsApp support person\n- Never say you are an AI or a bot\n- Never repeat the same question twice in the same conversation\n\n---\n\nCLOSING FORMAT\n\nEnd every message with a light closing.\n\nEnglish:\nRegards,\nBatra Numerro Pvt. Ltd. Support\n+91 7065731251\n\nHindi:\nसादर,\nBatra Numerro Pvt. Ltd. Support\n+91 7065731251\n\nHinglish:\nRegards,\nBatra Numerro Pvt. Ltd. Support\n+91 7065731251"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2416,
+        336
+      ],
+      "id": "0a6503c7-4198-4b86-b542-e343a17c4ed2",
+      "name": "Customer Support Agent9"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/150r5ZfGmjSPz-7S1vnzvvIcGfF5gta00Ce5E4Cy8_Gg/edit?tab=t.0"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        2592,
+        544
+      ],
+      "id": "18f39eb4-0f48-42bc-96ba-2c7612294f46",
+      "name": "Get a document in Google Docs4",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "zBNDjDHd1DJwnmzm",
+          "name": "Thebatraanumerology Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "365471bc-3f0e-4ad0-b402-f01497c82f7c",
+              "leftValue": "={{ $json.result }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2048,
+        192
+      ],
+      "id": "2d430fe1-e4bb-43c2-8587-3d0b8bb3af9c",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2416,
+        544
+      ],
+      "id": "d36814c6-9803-4e6e-8db4-1830d7722c00",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2416,
+        144
+      ],
+      "id": "cf9b7bf8-0f87-4e81-b3a4-54862252697c",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "S1K1kDUmL854DGcP",
+          "name": "OpenAi account Batra Numerro AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "736737689533503",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        3120,
+        176
+      ],
+      "id": "75c81d25-4d2e-4cdc-a472-1f8febf902f7",
+      "name": "Send message1",
+      "webhookId": "5e0c6720-2e29-4fe5-909b-48bc6121abd1",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "iZ3fXrhcpfVgYjLF",
+          "name": "WhatsApp account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "WhatsApp Trigger": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15551904071",
+            "phone_number_id": "736737689533503"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Vivek Pathak"
+              },
+              "wa_id": "919760306834"
+            }
+          ],
+          "messages": [
+            {
+              "from": "919760306834",
+              "id": "wamid.HBgMOTE5NzYwMzA2ODM0FQIAEhggQUM5OEI5OUZGRjdBNUNBMkYzNDIwNDA3QkM5NDI5NUMA",
+              "timestamp": "1772103876",
+              "text": {
+                "body": "Report not received"
+              },
+              "type": "text"
+            }
+          ],
+          "field": "messages"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent for path diffrentiation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document in Google Docs": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent for path diffrentiation",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent for path diffrentiation",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent to ask about the mail id and data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    "AI Agent for path diffrentiation": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent to ask about the mail id and data",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent to ask about the mail id and data",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet5": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent to ask about the mail id and data": {
+      "main": [
+        [
+          {
+            "node": "Code for Finding Email JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code for Finding Email JSON": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s) in sheet5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer Support Agent9": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document in Google Docs4": {
+      "ai_tool": [
+        [
+          {
+            "node": "Customer Support Agent9",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Customer Support Agent6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Customer Support Agent9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Customer Support Agent9",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Customer Support Agent6",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer Support Agent6": {
+      "main": [
+        [
+          {
+            "node": "Send message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Send message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "f55ed8eb-df33-4391-860f-13c5ec50a6f7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9fbe8f1e854a8e9e809037417b5a57fda11bd08c2ca2c1f51a7ebaef728745b9"
+  },
+  "id": "EKWt55BGkJeKqoQ4",
+  "tags": []
+}
